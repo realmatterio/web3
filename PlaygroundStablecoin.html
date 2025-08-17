@@ -30,7 +30,7 @@
         }
 
         .header h1 {
-            font-size: 2.5rem;
+            font-size: 2rem;
             font-weight: 300;
             color: #ffffff;
             animation: glow 2s ease-in-out infinite;
@@ -318,6 +318,39 @@
             100% { background-position: 0% 50%; }
         }
 
+        /* Small semi-transparent button style */
+        .button.small {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            color: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 500;
+            text-transform: none;
+            border-radius: 18px;
+            margin: 4px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .button.small:hover {
+            background: rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-1px) scale(1.01);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .button.small.secondary {
+            background: rgba(52, 199, 89, 0.15);
+            color: rgba(52, 199, 89, 1);
+            border-color: rgba(52, 199, 89, 0.3);
+        }
+
+        .button.small.secondary:hover {
+            background: rgba(52, 199, 89, 0.25);
+            border-color: rgba(52, 199, 89, 0.4);
+        }
+
         .display-box {
             background: linear-gradient(135deg, #ffffff 0%, #f9f9f9 100%);
             border: 1px solid #d1d1d6;
@@ -538,7 +571,7 @@
             }
 
             .header h1 {
-                font-size: 2rem;
+                font-size: 1.3rem;
             }
         }
 
@@ -615,10 +648,10 @@
 <body>
     <div class="container">
       <div class="header">
-        <h1>Stablecoin Playground</h1>
-        <div style="text-align: center; margin-top: 15px;">
-            <button class="button" onclick="loadSampleData()">Load Sample Data</button>
-            <button class="button secondary" onclick="clearAllData()">Clear All Data</button>
+        <h1>Stablecoin Liquidity Playground</h1>
+        <div style="text-align: center; margin-top: 15px; display: flex; gap: 15px; justify-content: center; max-width: 600px; margin: 15px auto 0;">
+            <button class="button small" onclick="loadSampleData()" style="flex: 1;">Load Sample Data</button>
+            <button class="button small secondary" onclick="clearAllData()" style="flex: 1;">Clear All Data</button>
         </div>
       </div>
           
@@ -653,11 +686,11 @@
                     </div>
                     <div id="asset-backed-inputs">
                         <div class="input-group">
-                            <label>Asset Credential Address 1:</label>
+                            <label>Asset Credential Proof:</label>
                             <input type="text" id="nft-address-1" placeholder="0x...">
                         </div>
                         <div class="input-group">
-                            <label>Auction Transaction Address 2:</label>
+                            <label>Valuation/Transaction Proof:</label>
                             <input type="text" id="nft-address-2" placeholder="0x...">
                         </div>
                     </div>
@@ -666,13 +699,13 @@
                         <input type="number" id="cash-value" placeholder="0.00" step="0.01">
                     </div>
                     <div class="button-group" id="asset-backed-buttons">
-                        <button class="button gradient-sharp" onclick="auctionIn()">Auction In</button>
+                        <button class="button gradient-sharp" onclick="revaluation()">Valuation</button>
+                        <button class="button secondary" onclick="auctionIn()">Auction In</button>
                         <button class="button danger" onclick="auctionOut()">Auction Out</button>
-                        <button class="button secondary" onclick="revaluation()">Revaluation</button>
                     </div>
                     <div class="button-group" id="fiat-commodity-buttons" style="display: none;">
-                        <button class="button" onclick="depositReserve()">Deposit Reserve</button>
-                        <button class="button danger" onclick="withdrawReserve()">Withdraw Reserve</button>
+                        <button class="button" onclick="depositReserve()">Deposit Collateral</button>
+                        <button class="button danger" onclick="withdrawReserve()">Withdraw Collateral</button>
                     </div>
                     <div class="console" id="collateral-console"></div>
                     <!-- div class="display-box">
@@ -692,6 +725,43 @@
 
                 </div>
                 
+                <!-- ICO and Reserve Row -->
+                <div class="row-box">
+                    <!-- ICO Fundraising Section (Asset-Backed Only) -->
+                    <div id="ico-section">
+                        <div class="row-title">ICO Fundraising (Innovative)</div>
+                        <div class="input-group">
+                            <label>Token Sales in USD Value:</label>
+                            <input type="number" id="ico-amount-input" placeholder="$0.00" step="0.01">
+                            <button class="button gradient-sharp" onclick="launchICO()">ICO Launch</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Reserve Funding Section (All Types) -->
+                    <div id="reserve-section">
+                        <div class="row-title">Reserve Funding</div>
+                        <div class="input-group">
+                            <label>Deposit / Withdraw in USD Value:</label>
+                            <input type="number" id="reserve-amount" placeholder="$0.00" step="0.01">
+                            <div class="button-group">
+                                <button class="button secondary" onclick="depositUSD()">Deposit</button>
+                                <button class="button danger" onclick="withdrawUSD()">Withdraw</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Combined USD Reserve Fund Pool Display -->
+                    <div class="display-box">
+                        USD Reserve Fund Pool: <br>
+                        $<span id="usd-reserve">0.00</span>
+                    </div>
+                    
+                    <div style="margin-top: 15px; margin-left: 15px;">
+                        <span class="indicator-light red" id="collateral-indicator"></span>
+                        <span class="status-text" id="collateral-status">Under-collateralized</span>
+                    </div>
+                </div>
+
                 <!-- Stablecoin Mint-Burn Row -->
                 <div class="row-box">
                     <div class="row-title">Stablecoin Mint-Burn</div>
@@ -720,33 +790,6 @@
                     </div>
                 </div>
                 
-                <!-- ICO and Reserve Row -->
-                <div class="row-box">
-                    <div class="row-title" id="ico-reserve-title">ICO & Reserve</div>
-                    <div id="asset-backed-reserve">
-                        <div class="input-group">
-                            <label>Token Sales / Deposit / Withdraw in USD Value:</label>
-                            <input type="number" id="ico-amount" placeholder="$0.00" step="0.01" onchange="updateReserve()">
-                            <button class="button gradient-sharp" onclick="launchICO()">ICO Launch</button>
-                            <button class="button secondary" onclick="depositUSD()">Deposit</button>
-                            <button class="button danger" onclick="withdrawUSD()">Withdraw</button>
-                        </div>
-                        <div class="display-box">
-                            USD Reserve Fund Pool: <br>
-                            $<span id="usd-reserve">0.00</span>
-                        </div>
-                    </div>
-                    <div id="fiat-commodity-reserve" style="display: none;">
-                        <div class="display-box">
-                            USD Reserve Fund Pool: <br>
-                            $<span id="usd-reserve-fiat">0.00</span>
-                        </div>
-                    </div>
-                    <div style="margin-top: 15px; margin-left: 15px;">
-                        <span class="indicator-light red" id="collateral-indicator"></span>
-                        <span class="status-text" id="collateral-status">Under-collateralized</span>
-                    </div>
-                </div>
             </div>
             
             <!-- Fund Pool Column -->
@@ -807,7 +850,7 @@
                         USD / Stablecoin pair: <br>
                         $<span id="suggested-usd">0.00</span> / <span id="suggested-stablecoin">0.000000</span>
                     </div>
-                    <button class="button danger" onclick="clearLiquidityPool()">Developer - Clear Swapper -</button>
+                    <button class="button small" style="align-items: center;" onclick="clearLiquidityPool()">🚫 Clear Swapper ⚠</button>
                 </div>
             </div>
             
@@ -885,18 +928,14 @@
             const assetBackedInputs = document.getElementById('asset-backed-inputs');
             const assetBackedButtons = document.getElementById('asset-backed-buttons');
             const fiatCommodityButtons = document.getElementById('fiat-commodity-buttons');
-            const assetBackedReserve = document.getElementById('asset-backed-reserve');
-            const fiatCommodityReserve = document.getElementById('fiat-commodity-reserve');
-            const icoReserveTitle = document.getElementById('ico-reserve-title');
+            const icoSection = document.getElementById('ico-section');
             const circulationRatio = document.getElementById('circulation-ratio');
             
             if (collateralType === 'fiat-pegged' || collateralType === 'commodity-pegged') {
                 assetBackedInputs.style.display = 'none';
                 assetBackedButtons.style.display = 'none';
                 fiatCommodityButtons.style.display = 'flex';
-                assetBackedReserve.style.display = 'none';
-                fiatCommodityReserve.style.display = 'block';
-                icoReserveTitle.textContent = 'USD Reserve';
+                icoSection.style.display = 'none'; // Hide ICO section for fiat/commodity
                 circulationRatio.value = '0.99';
                 
                 // Clear asset-backed specific fields
@@ -906,9 +945,7 @@
                 assetBackedInputs.style.display = 'block';
                 assetBackedButtons.style.display = 'flex';
                 fiatCommodityButtons.style.display = 'none';
-                assetBackedReserve.style.display = 'block';
-                fiatCommodityReserve.style.display = 'none';
-                icoReserveTitle.textContent = 'ICO & Reserve';
+                icoSection.style.display = 'block'; // Show ICO section for asset-backed
                 circulationRatio.value = '0.5';
             }
             
@@ -950,8 +987,15 @@
                 return;
             }
             
-            const address = '0x' + Math.random().toString(16).substr(2, 40);
-            document.getElementById('contract-address').textContent = `${name} Contract: ${address}`;
+            const address = '0x' + 
+                Math.random().toString(16).substr(2, 4) + 
+                '....' + 
+                Math.random().toString(16).substr(2, 4);
+            const symbol = name.substring(0, 3).toUpperCase();
+            document.getElementById('contract-address').innerHTML = 
+                `${name} Symbol: ${symbol}<br>` +
+                `Contract: ${address} deployed to Ethereum<br>` +
+                `Access Control: Admin, Minter, Pauser`;
         }
         
         // Collateral basket functions
@@ -1078,7 +1122,7 @@
                 document.getElementById('usd-reserve').textContent = usdReserve.toFixed(2);
             } else {
                 // For fiat/commodity-pegged, USD Reserve = Collateral Total Value
-                document.getElementById('usd-reserve-fiat').textContent = totalCollateralValue.toFixed(2);
+                document.getElementById('usd-reserve').textContent = totalCollateralValue.toFixed(2);
             }
             updateCollateralizationStatus();
             updateFundPools();
@@ -1086,7 +1130,7 @@
         
         // Add "ICO Launch" button functionality
         function launchICO() {
-            icoAmount = parseFloat(document.getElementById('ico-amount').value) || 0;
+            icoAmount = parseFloat(document.getElementById('ico-amount-input').value) || 0;
             updateReserve();
             alert(`ICO Launched for $${icoAmount.toFixed(2)}`);
         }
@@ -1254,31 +1298,53 @@
         
         // Add Deposit and Withdraw button functionality
         function depositUSD() {
-            const amount = parseFloat(document.getElementById('ico-amount').value);
+            const amount = parseFloat(document.getElementById('reserve-amount').value);
             if (!amount || amount <= 0) {
                 alert('Please enter a valid deposit amount');
                 return;
             }
-            const lastIcoAmount = icoAmount;
-            icoAmount = lastIcoAmount + amount;
+            
+            if (collateralType === 'asset-backed') {
+                const lastIcoAmount = icoAmount;
+                icoAmount = lastIcoAmount + amount;
+                alert(`Deposited $${amount.toFixed(2)} into asset-backed reserve (was $${lastIcoAmount.toFixed(2)})`);
+            } else {
+                const lastCollateralValue = totalCollateralValue;
+                totalCollateralValue = lastCollateralValue + amount;
+                alert(`Deposited $${amount.toFixed(2)} into ${collateralType} reserve (was $${lastCollateralValue.toFixed(2)})`);
+            }
+            
             updateReserve();
-            alert(`Deposited $${amount.toFixed(2)} into $${lastIcoAmount.toFixed(2)}`);
+            document.getElementById('reserve-amount').value = '';
         }
 
         function withdrawUSD() {
-            const amount = parseFloat(document.getElementById('ico-amount').value);
+            const amount = parseFloat(document.getElementById('reserve-amount').value);
             if (!amount || amount <= 0) {
                 alert('Please enter a valid withdrawal amount');
                 return;
             }
-            if (amount > icoAmount) {
-                alert('Insufficient funds in Reserve for withdrawal');
-                return;
+            
+            if (collateralType === 'asset-backed') {
+                if (amount > icoAmount) {
+                    alert('Insufficient funds in asset-backed reserve for withdrawal');
+                    return;
+                }
+                const lastIcoAmount = icoAmount;
+                icoAmount = lastIcoAmount - amount;
+                alert(`Withdrew $${amount.toFixed(2)} from asset-backed reserve (was $${lastIcoAmount.toFixed(2)})`);
+            } else {
+                if (amount > totalCollateralValue) {
+                    alert(`Insufficient funds in ${collateralType} reserve for withdrawal`);
+                    return;
+                }
+                const lastCollateralValue = totalCollateralValue;
+                totalCollateralValue = lastCollateralValue - amount;
+                alert(`Withdrew $${amount.toFixed(2)} from ${collateralType} reserve (was $${lastCollateralValue.toFixed(2)})`);
             }
-            const lastIcoAmount = icoAmount;
-            icoAmount = lastIcoAmount - amount;
+            
             updateReserve();
-            alert(`Withdrew $${amount.toFixed(2)} from $${lastIcoAmount.toFixed(2)}`);
+            document.getElementById('reserve-amount').value = '';
         }
         
         // Initialize page when loaded
@@ -1307,9 +1373,9 @@
                 document.getElementById('cash-value').value = '30000';
                 auctionIn();
                 
-                // Set ICO amount
-                document.getElementById('ico-amount').value = '20000';
-                launchICO();
+                // Set reserve deposit amount
+                document.getElementById('reserve-amount').value = '50000';
+                depositUSD();
             } else {
                 // Add sample reserves for fiat/commodity-pegged
                 document.getElementById('cash-value').value = '100000';

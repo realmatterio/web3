@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stablecoin and Compliance Framework</title>
+    <title>Stablecoin Liquidity and Compliance Framework</title>
     <style>
         * {
             margin: 0;
@@ -49,7 +49,7 @@
         }
 
         .header h1 {
-            font-size: 2.5rem;
+            font-size: 2rem;
             font-weight: 700;
             color: #ffffff;
             animation: glow 2s ease-in-out infinite;
@@ -408,13 +408,13 @@
             }
             
             .header h1 {
-                font-size: 2rem;
+                font-size: 1.5rem;
             }
         }
 
         @media (max-width: 480px) {
             .header h1 {
-                font-size: 1.5rem;
+                font-size: 1.3rem;
                 line-height: 1.2;
             }
             
@@ -487,7 +487,7 @@
             <div class="modal-content">
                 <span class="close-hint" onclick="closeAboutModal()">&times;</span>
                 <h2>About This Framework</h2>
-                <p>This Stablecoin Scenario Analysis Framework is an interactive web tool designed to help users explore, configure, and analyze different models for issuing and managing stablecoins. The framework provides a comprehensive, modular interface that covers the full lifecycle of a stablecoin, from collateral selection and proof of reserves to liquidity protocols and compliance requirements.</p>
+                <p>This Stablecoin Liquidity Scenario Analysis Framework is an interactive web tool designed to help users explore, configure, and analyze different models for issuing and managing stablecoins. The framework provides a comprehensive, modular interface that covers the full lifecycle of a stablecoin, from collateral selection and proof of reserves to liquidity protocols and compliance requirements.</p>
                 
                 <p>Users can experiment with various collateral types (asset-backed, fiat-pegged, commodity-pegged), select reserve verification methods, and define pegged exchange rates and smart contract standards. The framework also allows users to simulate liquidity strategies, including market making, staking, lending, and borrowing, using leading DeFi protocols.</p>
                 
@@ -502,7 +502,7 @@
         </div>
 
         <div class="header">
-            <h1>Stablecoin and Compliance Framework</h1>
+            <h1>Stablecoin Liquidity & Compliance Framework</h1>
         </div>
 
         <button class="about-button" onclick="openAboutModal()" title="About this framework">?</button>
@@ -586,7 +586,7 @@
                     <div class="description">Mechanisms for cross-chain interoperability, ensuring secure transfers between blockchains.</div>
                 </div>
 
-                <a href="IssuanceArbitrage.html" target="_blank" class="nav-button" id="issuance-button">
+                <a href="PlaygroundStablecoin.html" target="_blank" class="nav-button" id="issuance-button">
                     Try STABLECOIN Issuance
                 </a>
             </div>
@@ -602,7 +602,7 @@
                     <label>Liquidity Pool</label>
                     <select>
                         <option value="">▶️ Pool</option>
-                        <option value="quantumatter" class="highlight-blue">Quantumatter⭐</option>
+                        <option value="quantumatter" class="highlight-blue">Quantumatter Smart Contract⭐</option>
                         <option value="uniswap-v3">Uniswap V3</option>
                         <option value="curve-finance">Curve Finance</option>
                         <option value="balancer">Balancer</option>
@@ -667,7 +667,7 @@
                 <div class="input-group">
                     <label>Cross Border Remittance</label>
                     <select>
-                        <option value="">▶️ Option</option>
+                        <option value="">▶️ Remittance</option>
                         <option value="instant-settlement" class="highlight-blue">Instant Settlement⭐</option>
                         <option value="scheduled-transfers">Scheduled Transfers</option>
                         <option value="multi-currency-swaps">Multi-Currency Swaps</option>
@@ -791,7 +791,7 @@
             subSelect.innerHTML = '<option value="">▶️ Sub-option</option>';
             
             // Update the issuance button URL
-            updateIssuanceButtonUrl(collateralType);
+            //updateIssuanceButtonUrl(collateralType);
             
             if (collateralType === 'asset-backed') {
                 subOptions.style.display = 'block';
@@ -848,6 +848,7 @@
         }
 
         // Function to update the issuance button URL with collateral type parameter
+        /*
         function updateIssuanceButtonUrl(collateralType) {
             const issuanceButton = document.getElementById('issuance-button');
             let baseUrl = 'IssuanceArbitrage.html';
@@ -857,7 +858,7 @@
             }
             
             issuanceButton.href = baseUrl;
-        }
+        }*/
 
         // Enhanced button interactions
         document.addEventListener('DOMContentLoaded', function() {
