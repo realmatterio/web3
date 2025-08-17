@@ -1,0 +1,273 @@
+# Software Specification: RWA Tokenization Playground - Enhanced Mock-Up Demo App
+
+## 1. Introduction
+
+### 1.1 Purpose
+This document outlines the software specification for an enhanced mock-up application designed to demonstrate the T-REX tokenization platform framework. The app simulates the complete lifecycle of tokenizing real-world assets (RWAs) using ERC3643 security tokens on an EVM-compatible blockchain. It showcases key processes including RWA valuation integration, investor onboarding, automated token calculation, smart contract deployment simulation, servicing, and secondary distribution, while providing an intuitive user experience with modern UI/UX design patterns.
+
+The enhanced mock-up features a sophisticated single-page web application with real-time calculations, blockchain simulation displays, role-based access control, and interactive educational guides. It includes advanced visual effects, automated workflows, and comprehensive logging to provide a professional demonstration environment for educational and sales purposes.
+
+### 1.2 Scope
+- *In Scope*: Complete simulation of end-to-end tokenization processes with enhanced UX, including:
+  - Two-phase modular architecture (Tokenization & Lifecycle Management)
+  - Automatic token supply calculations with real-time validation
+  - Blockchain transaction simulation with console-style modal displays  
+  - Role-switching capabilities with context-aware interfaces
+  - Smart contract deployment simulation with realistic blockchain data
+  - Enhanced visual effects including gradient animations and modern styling
+  - Educational guides and interactive tours for each module
+  - Sample data auto-loading and asset selection preservation
+- *Out of Scope*: Real blockchain interactions, live integrations, production authentication, mobile-optimized responsive design for all screen sizes.
+
+### 1.3 Assumptions and Dependencies
+- Users have basic knowledge of tokenization and blockchain concepts
+- The app runs in modern web browsers with JavaScript enabled
+- No external dependencies - fully self-contained single HTML file
+- Mock data includes realistic RWA examples (real estate, art collections)
+- Built with vanilla HTML, CSS, and JavaScript for maximum compatibility
+
+### 1.4 Definitions and Acronyms  
+- *RWA*: Real-World Asset (e.g., property, art, commodities)
+- *ERC3643*: Ethereum standard for compliant security tokens
+- *KYC*: Know Your Customer verification process
+- *Cap Table*: Capitalization Table showing ownership distribution
+- *UI/UX*: User Interface/User Experience design
+- *SPA*: Single Page Application architecture
+
+## 2. Enhanced Functional Requirements
+
+The application features a sophisticated modular architecture organized into two distinct phases: Tokenization and Lifecycle Management. It supports three user roles with seamless role-switching capabilities and provides comprehensive educational guidance throughout the user journey.
+
+### 2.1 Architecture and User Interface
+
+#### 2.1.1 Modular Phase-Based Design
+- *Tokenization Phase*: Includes RWA Preparation, Investor Onboarding, and Token Issuance modules
+- *Lifecycle Management Phase*: Covers Asset Servicing and Secondary Distribution modules  
+- *Visual Design*: Each phase has distinct color theming (blue for tokenization, green for lifecycle)
+- *Responsive Layout*: Module cards arranged in grid layouts with consistent spacing and typography
+
+#### 2.1.2 Enhanced User Experience Features
+- *Gradient Button Effects*: Sharp 90-degree gradient animations on primary action buttons
+- *Role-Switch Integration*: Context-aware buttons allowing seamless role transitions within modules
+- *Progress Indicators*: Real-time progress bars for each module showing completion status
+- *Interactive Tours*: Guided walkthroughs and educational popups for complex concepts
+- *Notification System*: Toast notifications for user feedback and system status updates
+
+### 2.2 User Roles and Enhanced Authentication
+
+#### 2.2.1 Role-Based Access Control
+- *Issuer/Agent*: Complete access to all tokenization and lifecycle management functions
+- *Investor*: Limited to onboarding and secondary distribution modules with portfolio views
+- *Admin*: Full platform oversight with emergency controls and system monitoring
+- *Role Switching*: Users can switch roles dynamically through header icons or contextual buttons
+
+#### 2.2.2 Authentication Implementation
+- *Simple Role Selection*: Click-based role switching without traditional login
+- *Visual Role Indicators*: Header displays current role with animated role icons
+- *Context-Aware Interface*: Module visibility and functionality adapt based on selected role
+- *No Persistent Authentication*: Session-based role selection for demo purposes
+
+### 2.3 Enhanced RWA Preparation and Valuation Module
+
+#### 2.3.1 Asset Configuration Features
+- *Asset Type Selection*: Dropdown supporting Real Estate, Private Equity, Commodities, Art & Collectibles
+- *Token Symbol Generation*: Automatic validation for unique token symbols (max 8 characters)
+- *Jurisdiction Compliance*: Support for multiple jurisdictions (Hong Kong, UK, Singapore, UAE)
+- *Valuation Integration*: Direct input with date validation and automatic today's date defaulting
+
+#### 2.3.2 Enhanced Workflow Features
+- *Form Validation*: Comprehensive validation with user-friendly error messages
+- *Auto-Save Draft*: Form data persistence during session
+- *Asset Preview*: Real-time preview of asset configuration before submission
+- *Sample Data Integration*: Pre-loaded sample assets for immediate demonstration
+
+### 2.4 Advanced Investor Onboarding Module
+
+#### 2.4.1 Role-Contextual Interface Design
+- *Investor View*: KYC submission form with wallet address collection
+- *Issuer View*: KYC review queue with approval/rejection workflows
+- *Admin View*: Platform oversight with audit and compliance tools
+- *Dynamic Role Switching*: Contextual buttons to switch between investor and issuer perspectives
+
+#### 2.4.2 Enhanced KYC Features
+- *Blockchain Wallet Integration*: Ethereum wallet address collection (validation optional)
+- *Investment Amount Tracking*: Numerical input with currency formatting
+- *Status Management*: Pending/Approved/Rejected status workflow with visual indicators
+- *Queue Management*: Real-time KYC application queue with processing controls
+### 2.5 Advanced Token Issuance Module
+
+#### 2.5.1 Automated Token Economics
+- *Asset Value Integration*: Automatic population of asset value from prepared RWA data
+- *Dynamic Token Calculation*: Real-time computation using formula: Tokens = Asset Value ÷ Token Price
+- *Live Calculation Display*: Visual calculator showing breakdown of token economics
+- *Validation System*: Automatic verification of calculation accuracy before contract deployment
+
+#### 2.5.2 Smart Contract Deployment Simulation
+- *ERC3643 Contract Simulation*: Mock deployment with realistic blockchain data
+- *Console-Style Modal Display*: Terminal-themed popup showing deployment details
+- *Blockchain Data Generation*: Random but realistic contract addresses, transaction hashes, gas usage
+- *Asset Selection Preservation*: Maintains selected asset context throughout deployment process
+- *Deployment Status Tracking*: Visual indicators of contract deployment status
+
+#### 2.5.3 Token Allocation Features
+- *Investor Targeting*: Automatic allocation to approved KYC investors
+- *Transaction Logging*: Detailed console logs for each token transfer simulation  
+- *Cap Table Generation*: Real-time ownership table with percentage calculations
+- *Compliance Integration*: ERC3643 standard simulation with transfer restrictions
+
+### 2.6 Enhanced Asset Servicing Module
+
+#### 2.6.1 Corporate Action Management
+- *Action Types*: Dividend distributions, token minting/burning, transfer controls, regulatory compliance
+- *Parameter Input*: Dynamic form fields based on selected action type
+- *Investor Communications*: Message broadcasting system for action notifications
+- *Impact Simulation*: Real-time preview of action effects on token holders
+
+#### 2.6.2 Lifecycle Management Tools
+- *Asset Performance Tracking*: Mock reporting for asset value changes
+- *Compliance Monitoring*: Regulatory status tracking and audit trail
+- *Investor Relations*: Communication tools for ongoing investor management
+- *Report Generation*: Automated report creation for regulatory compliance
+
+### 2.7 Advanced Secondary Distribution Module
+
+#### 2.7.1 Trading Platform Simulation
+- *Multi-Channel Support*: P2P, centralized exchanges, DeFi protocols, OTC markets
+- *Trading Controls*: Enable/disable trading with compliance checks
+- *Order Management*: Buy/sell order posting with price and quantity controls
+- *Market Data Simulation*: Mock trading history and liquidity metrics
+
+#### 2.7.2 Liquidity and Market Making
+- *Trade History Tracking*: Comprehensive log of all secondary market activities
+- *Price Discovery*: Market-based pricing with bid/ask spreads
+- *Compliance Integration*: Ongoing KYC verification for secondary market participants
+- *Analytics Dashboard*: Trading volume, price trends, and market depth visualization
+
+### 2.8 System-Wide Enhancements
+
+#### 2.8.1 Data Management and Sample Loading
+- *Sample Data System*: Pre-configured realistic examples (luxury real estate, art collections)
+- *Auto-Selection Features*: Automatic asset selection and form population upon sample data loading
+- *Data Persistence*: Session-based data retention with reset capabilities
+- *Cross-Module Integration*: Seamless data flow between all modules
+
+#### 2.8.2 Educational and Guidance Systems
+- *Interactive Tutorials*: Step-by-step guided tours for each user role
+- *Contextual Help*: Module-specific educational guides comparing traditional vs. tokenized approaches
+- *Concept Explanations*: Detailed popups explaining complex tokenization concepts
+- *Best Practices*: Integrated guidance for optimal platform utilization
+
+## 3. Technical Specifications
+
+### 3.1 Architecture and Implementation
+
+#### 3.1.1 Single Page Application (SPA) Design
+- *Technology Stack*: Pure HTML5, CSS3, and vanilla JavaScript (no external dependencies)
+- *File Structure*: Self-contained single HTML file with embedded CSS and JavaScript
+- *Performance*: Optimized for fast loading with minimal resource requirements
+- *Compatibility*: Works in all modern browsers without plugins or additional installations
+
+#### 3.1.2 State Management
+- *Global State*: JavaScript objects for rwas, investors, tokens, trades, and notifications
+- *Real-Time Updates*: Event-driven updates across all modules and components
+- *Data Persistence*: Session-based storage with reset capabilities
+- *Cross-Module Communication*: Centralized update functions ensuring data consistency
+
+### 3.2 User Interface and Visual Design
+
+#### 3.2.1 Modern CSS Implementation
+- *Gradient Effects*: CSS animations with keyframe-based color transitions
+- *Responsive Layout*: Flexbox and CSS Grid for optimal module arrangement
+- *Typography*: Segoe UI font family with consistent sizing and hierarchy
+- *Color Theming*: Phase-specific color schemes (blue for tokenization, green for lifecycle)
+
+#### 3.2.2 Interactive Elements
+- *Button Animations*: 90-degree gradient shifts with hover effects and transformations
+- *Form Validation*: Real-time JavaScript validation with user-friendly error messaging
+- *Modal System*: Overlay modals for detailed information display and blockchain simulations
+- *Progress Indicators*: Dynamic progress bars reflecting module completion status
+
+### 3.3 Data Models and Simulation
+
+#### 3.3.1 Asset Data Structure
+```javascript
+{
+  id: number,
+  type: string, // 'real-estate', 'art', 'commodities', 'private-equity'
+  description: string,
+  tokenSymbol: string,
+  jurisdiction: string,
+  valuation: number,
+  date: string,
+  status: string,
+  deployed?: {
+    contractAddress: string,
+    tokenName: string,
+    supply: number,
+    price: number,
+    transactionHash: string
+  }
+}
+```
+
+#### 3.3.2 Investor Data Structure
+```javascript
+{
+  id: number,
+  name: string,
+  wallet: string,
+  investment: number,
+  status: string, // 'pending', 'approved', 'rejected'
+  kycDate: string
+}
+```
+
+#### 3.3.3 Token Data Structure
+```javascript
+{
+  id: number,
+  investorId: number,
+  investorName: string,
+  investorWallet: string,
+  tokenSymbol: string,
+  tokensAllocated: number,
+  tokenPrice: number,
+  totalValue: number,
+  transactionHash: string
+}
+```
+
+### 3.4 Blockchain Simulation Features
+
+#### 3.4.1 Smart Contract Deployment Simulation
+- *Contract Address Generation*: Cryptographically realistic Ethereum addresses
+- *Transaction Hash Simulation*: 64-character hexadecimal strings mimicking real blockchain transactions
+- *Gas Usage Simulation*: Realistic gas consumption figures for ERC3643 deployments
+- *Block Number Generation*: Current Ethereum mainnet block number ranges
+
+#### 3.4.2 Transaction Logging System
+- *Console Integration*: Browser console logging for development and debugging
+- *Modal Display System*: Terminal-style popups showing blockchain transaction details
+- *Color-Coded Output*: Syntax highlighting for different data types and status indicators
+- *Comprehensive Detail*: Full transaction metadata including addresses, amounts, and confirmations
+
+## 4. Implementation Guidelines
+
+### 4.1 Development Best Practices
+- *Code Organization*: Logical separation of HTML structure, CSS styling, and JavaScript functionality
+- *Naming Conventions*: Consistent naming for CSS classes, JavaScript functions, and HTML elements
+- *Error Handling*: Graceful error management with user-friendly messaging
+- *Performance Optimization*: Efficient DOM manipulation and event handling
+
+### 4.2 Testing and Quality Assurance
+- *Cross-Browser Testing*: Verification across Chrome, Firefox, Safari, and Edge
+- *Functionality Testing*: Complete workflow testing for all user roles and scenarios
+- *UI/UX Testing*: Visual consistency and interaction responsiveness validation
+- *Data Integrity Testing*: Verification of calculations, state updates, and data persistence
+
+### 4.3 Deployment and Distribution
+- *Single File Deployment*: No server requirements - can be opened directly in browsers
+- *Version Control*: Git-based versioning with clear commit history
+- *Documentation*: Inline code comments and external specification documentation
+- *Demo Configuration*: Pre-loaded sample data for immediate demonstration capabilities
+

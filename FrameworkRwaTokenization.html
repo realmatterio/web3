@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RWA Tokenization and Compliance Framework</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 25%, #90caf9 50%, #64b5f6 75%, #42a5f5 100%);
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Cyber glow animations */
+        @keyframes glow {
+            0%, 100% { text-shadow: 0 0 10px rgba(0, 150, 255, 0.8), 0 0 20px rgba(0, 150, 255, 0.6), 0 0 30px rgba(0, 150, 255, 0.4); }
+            50% { text-shadow: 0 0 20px rgba(0, 200, 255, 1), 0 0 30px rgba(0, 200, 255, 0.8), 0 0 40px rgba(0, 200, 255, 0.6); }
+        }
+
+        @keyframes borderGlow {
+            0%, 100% { border-color: rgba(0, 150, 255, 0.5); box-shadow: 0 0 20px rgba(0, 150, 255, 0.3); }
+            50% { border-color: rgba(0, 200, 255, 0.8); box-shadow: 0 0 30px rgba(0, 200, 255, 0.5); }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #ffffff;
+            animation: glow 2s ease-in-out infinite;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+            display: inline-block;
+        }
+
+        .about-button {
+            position: fixed;
+            right: 20px;
+            top: 20px;
+            background: linear-gradient(135deg, rgba(0, 150, 255, 0.3), rgba(0, 200, 255, 0.5));
+            color: #ffffff;
+            border: 2px solid rgba(0, 200, 255, 0.6);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+            z-index: 100;
+        }
+
+        .about-button:hover {
+            transform: scale(1.1);
+            background: linear-gradient(135deg, rgba(0, 200, 255, 0.5), rgba(0, 255, 255, 0.7));
+            box-shadow: 0 0 20px rgba(0, 200, 255, 0.5);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, rgba(0, 20, 40, 0.95), rgba(0, 30, 60, 0.95));
+            margin: 5% auto;
+            padding: 30px;
+            border: 2px solid #00ffff;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(0, 255, 255, 0.3), 
+                        0 0 100px rgba(0, 255, 255, 0.1);
+            animation: slideIn 0.3s ease-out;
+            color: #ffffff;
+        }
+
+        .modal-content h2 {
+            color: #00ffff;
+            text-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 2rem;
+            background: linear-gradient(45deg, #00ffff, #ffffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .modal-content p {
+            line-height: 1.8;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            text-align: justify;
+        }
+
+        .close-hint {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            color: #00ffff;
+            font-size: 1.5rem;
+            opacity: 0.7;
+            cursor: pointer;
+            transition: opacity 0.3s ease;
+        }
+
+        .close-hint:hover {
+            opacity: 1;
+        }
+
+        @keyframes slideIn {
+            from { 
+                transform: translateY(-50px) scale(0.9);
+                opacity: 0;
+            }
+            to { 
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .column-box {
+            background: linear-gradient(145deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6));
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(15px);
+            border: 4px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.1),
+                0 4px 16px rgba(0, 0, 0, 0.05);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .column-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(0, 150, 255, 0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .column-box:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: rgba(0, 200, 255, 0.6);
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.2),
+                0 0 40px rgba(0, 200, 255, 0.4);
+            animation: borderGlow 2s ease-in-out infinite;
+        }
+
+        .column-box:hover::before {
+            opacity: 1;
+        }
+
+        .title-icon {
+            font-size: 2rem;            
+            display: inline-block;
+        }
+
+        .column-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #bff0ff;
+            margin-bottom: 25px;
+            text-align: center;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            font-size: 14px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: inherit;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: rgba(0, 200, 255, 0.8);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 
+                0 0 0 3px rgba(0, 200, 255, 0.2),
+                0 4px 12px rgba(0, 200, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        select:hover {
+            border-color: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-1px);
+        }
+
+        select option {
+            background: #1a1a1a;
+            color: #ffffff;
+            padding: 8px;
+        }
+
+        /* Highlight specific options in light blue */
+        select option.highlight-blue {
+            color: #87f1ff;
+            font-weight: 600;
+        }
+
+        select option.highlight-blue:hover {
+            font-weight: 700;
+        }
+
+        select option.highlight-blue::before {
+            content: "⭐ ";
+        }
+
+        .sub-options {
+            margin-left: 20px;
+            margin-top: 10px;
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .description {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 5px;
+            line-height: 1.4;
+            font-style: italic;
+        }
+
+        .nav-button {
+            background: linear-gradient(135deg, #8155fc 0%, #007fc8 100%);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            padding: 15px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 
+                0 8px 20px rgba(0, 230, 118, 0.3),
+                0 4px 10px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+            margin-top: 20px;
+            width: 100%;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .nav-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .nav-button:hover::before {
+            left: 100%;
+        }
+
+        .nav-button:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 
+                0 15px 30px rgba(0, 230, 118, 0.4),
+                0 8px 20px rgba(0, 0, 0, 0.3);
+            animation: bounce 1s ease-in-out infinite;
+        }
+
+        .arrow-icon {
+            font-size: 1.5rem;            
+            margin-left: 8px;
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-button:hover .arrow-icon {
+            transform: translateY(3px);
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+        }
+
+        .footer a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 10px 20px;
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .footer a:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Responsive design */
+        @media (max-width: 1200px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .column-box {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.5rem;
+                line-height: 1.2;
+            }
+            
+            .column-box {
+                padding: 15px;
+            }
+        }
+
+        /* Home Button Styles */
+        .home-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: rgba(0, 200, 255, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            font-size: 24px;
+            box-shadow: 
+                0 4px 20px rgba(0, 200, 255, 0.3),
+                0 2px 10px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(15px);
+        }
+
+        .home-button:hover {
+            transform: translateY(-3px) scale(1.1);
+            box-shadow: 
+                0 8px 30px rgba(0, 200, 255, 0.5),
+                0 4px 20px rgba(0, 0, 0, 0.3);
+            background: rgba(0, 212, 255, 0.5);
+            color: white;
+            text-decoration: none;
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .home-button:active {
+            transform: translateY(-1px) scale(1.05);
+        }
+
+        @keyframes homeButtonPulse {
+            0%, 100% {
+                box-shadow: 
+                    0 4px 20px rgba(0, 200, 255, 0.3),
+                    0 2px 10px rgba(0, 0, 0, 0.2);
+            }
+            50% {
+                box-shadow: 
+                    0 6px 25px rgba(0, 200, 255, 0.5),
+                    0 3px 15px rgba(0, 0, 0, 0.3);
+            }
+        }
+
+        .home-button {
+            animation: homeButtonPulse 3s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- About Modal -->
+        <div id="about-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-hint" onclick="closeAboutModal()">&times;</span>
+                <h2>About This Framework</h2>
+                <p>This RWA Tokenization Scenario Analysis Framework is an enhanced mock-up application designed to demonstrate the complete lifecycle of tokenizing real-world assets using ERC20/ERC1400/ERC3643 security tokens. The framework showcases sophisticated financial modeling, automated token economics calculations, and blockchain simulation capabilities across multiple user roles.</p>
+
+                <p>The system features a modular phase-based architecture covering Tokenization Phase (RWA Preparation, Investor Onboarding, Token Issuance) and Lifecycle Management Phase (Asset Servicing, Secondary Distribution). Users can experience role-based access control as Issuer, Investor, or Admin, each with contextual interfaces and capabilities.</p>
+                
+                <p>Key financial innovations include automated token supply calculations using the formula <strong>Tokens = Asset Value ÷ Token Price</strong>, real-time validation systems, smart contract deployment simulation with realistic blockchain data, and comprehensive cap table management. The platform supports sophisticated corporate actions including dividend distributions, asset appreciation minting, and compliance-driven transfer controls.</p>
+                
+                <p>Advanced features include gradient-animated interfaces, educational guidance systems, sample data integration, and blockchain transaction simulation with console-style displays. The framework demonstrates professional-grade tokenization workflows while maintaining regulatory compliance through ERC3643 standard implementation and comprehensive KYC/AML procedures.</p>
+                
+                <div style="text-align: center; margin-top: 20px; font-style: italic; color: #00ffff;">
+                    Click anywhere outside this box to close
+                </div>
+            </div>
+        </div>
+
+        <div class="header">
+            <h1>RWA Tokenization and Compliance Framework</h1>
+        </div>
+
+        <button class="about-button" onclick="openAboutModal()" title="About this framework">?</button>
+        
+        <div class="main-grid">
+            <!-- Column 1: RWA Tokenization Framework -->
+            <div class="column-box">
+                <div class="column-title">
+                    <span class="title-icon">🏛️</span>
+                    <br>RWA Tokenization Framework<br>
+                </div>
+                
+                <div class="input-group">
+                    <label>Asset Type</label>
+                    <select id="asset-type" onchange="updateAssetOptions()">
+                        <option value="">▶️ Asset Type</option>
+                        <option value="art" class="highlight-blue">Art Collection⭐</option>
+                        <option value="real-estate">Real Estate⭐</option>
+                        <option value="commodities">Commodities</option>
+                        <option value="bonds">Bonds</option>
+                    </select>
+                    <div class="description">Select real-world assets for fractional ownership tokenization with professional valuation and custody requirements.</div>
+                </div>
+
+                <div class="input-group">
+                    <label>Tokenization Economics</label>
+                    <select>
+                        <option value="">▶️ Token Economics</option>
+                        <option value="fractional-ownership" class="highlight-blue">Fractional Ownership Rights⭐</option>
+                        <option value="revenue-distribution">Yield Distribution Tokens⭐</option>
+                        <option value="voting-governance">Governance & Voting Rights⭐</option>
+                    </select>
+                    <div class="description">Define token holder rights and economic participation.</div>
+                </div>
+
+                <div class="input-group">
+                    <label>Token Supply Formula</label>
+                    <select>
+                        <option value="">▶️ Calculation Method</option>
+                        <option value="asset-value-division" class="highlight-blue">Tokens = Asset Value ÷ Token Price⭐</option>
+                        <option value="fixed-supply">Fixed Token Supply⭐</option>
+                        <option value="dynamic-minting">Dynamic Supply (Asset Appreciation)</option>
+                        <option value="proportional-shares">Proportional Share-Based</option>
+                    </select>
+                    <div class="description">Automated calculation system determining total token supply based on asset valuation and minimum investment units (token price).</div>
+                </div>
+
+                <div class="input-group">
+                    <label>ERC3643 Compliance</label>
+                    <select>
+                        <option value="">▶️ Security Token Standard</option>
+                        <option value="erc3643-full" class="highlight-blue">ERC3643 Full Compliance⭐</option>
+                        <option value="erc3643-basic">ERC20 Custom Implementation</option>
+                        <option value="custom-compliance">ERC1400 Custom Compliance</option>
+                        <option value="hybrid-standard">Non-ERC Token Standard</option>
+                    </select>
+                    <div class="description">Security token standard ensuring KYC compliance, transfer restrictions, and regulatory adherence for professional asset tokenization.</div>
+                </div>
+
+                <div class="input-group">
+                    <label>Blockchain Deployment</label>
+                    <select>
+                        <option value="">▶️ Blockchain</option>
+                        <option value="modular-proxy" class="highlight-blue">Ethereum⭐</option>
+                        <option value="factory-pattern">Polygon⭐</option>
+                        <option value="factory-pattern">Layer 2⭐</option>
+                        <option value="factory-pattern">Solana (Non-ERC)</option>
+                        <option value="single-contract">Bitcoin Inscription (Non-ERC)</option>
+                    </select>
+                    <div class="description">Contract architecture supporting upgradability, modularity, and gas optimization for enterprise-grade asset tokenization.</div>
+                </div>
+
+                <div class="input-group">
+                    <label>Smart Contract Architecture</label>
+                    <select>
+                        <option value="">▶️ Contract Design</option>
+                        <option value="modular-proxy" class="highlight-blue">Upgradeable Proxy Pattern⭐</option>
+                        <option value="factory-pattern">Factory Contract Pattern</option>
+                        <option value="single-contract">Monolithic Contract</option>
+                    </select>
+                    <div class="description">Contract architecture supporting upgradability, modularity, and gas optimization for enterprise-grade asset tokenization.</div>
+                </div>
+
+                <div class="input-group">
+                    <label>Professional Custody</label>
+                    <select>
+                        <option value="">▶️ Asset Custody</option>
+                        <option value="qualified-custodian" class="highlight-blue">Qualified Custodian (Bank/Trust)⭐</option>
+                        <option value="institutional-vault">Institutional Vault Services</option>
+                        <option value="multi-sig-custody">Multi-Signature Custody</option>
+                        <option value="hybrid-custody">Hybrid Custody Solution</option>
+                    </select>
+                    <div class="description">Professional-grade custody solutions ensuring asset security, insurance coverage, and regulatory compliance for high-value tokenized assets.</div>
+                </div>
+
+                <a href="PlaygroundRwaTokenization.html" target="_blank" class="nav-button" id="issuance-button">
+                    Try RWA Tokenization Playground
+                </a>
+            </div>
+
+            <!-- Column 2: RWA Liquidity Protocols -->
+            <div class="column-box">
+                <div class="column-title">
+                    <span class="title-icon">🌊</span>
+                    <br>RWA Liquidity Protocols<br>
+                </div>
+                
+                <div class="input-group">
+                    <label>Professional Liquidity Solutions</label>
+                    <select>
+                        <option value="">▶️ Liquidity Architecture</option>
+                        <option value="institutional-amm" class="highlight-blue">Institutional AMM Pools⭐</option>
+                        <option value="order-book-exchange">Professional Order Book</option>
+                        <option value="otc-marketplace">OTC Trading Network</option>
+                        <option value="hybrid-liquidity">Hybrid Liquidity Model</option>
+                    </select>
+                    <div class="description">Enterprise-grade liquidity infrastructure supporting large-ticket RWA token trading with institutional market makers and professional investors.</div>
+                </div>
+
+                <div class="input-group">
+                    <label>Yield Generation Strategies</label>
+                    <select>
+                        <option value="">▶️ Yield Sources</option>
+                        <option value="asset-income" class="highlight-blue">Underlying Asset Income⭐</option>
+                        <option value="appreciation-yield">Asset Appreciation Returns⭐</option>
+                        <option value="liquidity-rewards">Liquidity Provision Rewards</option>
+                        <option value="staking-governance">Governance Participation Rewards</option>
+                    </select>
+                    <div class="description">Multiple yield generation mechanisms: rental income, dividends, capital appreciation, liquidity incentives, and governance participation rewards.</div>
+                </div>
+
+                <div class="input-group">
+                    <label>Collateral & Lending Framework</label>
+                    <select>
+                        <option value="">▶️ Lending Infrastructure</option>
+                        <option value="rwa-collateral" class="highlight-blue">RWA Token Collateralization⭐</option>
+                        <option value="cross-collateral">Cross-Asset Collateral Pools</option>
+                        <option value="institutional-lending">Institutional Lending Services</option>
+                        <option value="defi-integration">DeFi Protocol Integration</option>
+                    </select>
+                    <div class="description">Advanced lending infrastructure allowing RWA tokens as collateral for loans, margin trading, and leverage strategies with professional risk management.</div>
+                </div>
+
+                <a href="StakingLending.html" target="_blank" class="nav-button">
+                    Try Advanced Liquidity Protocols
+                </a>
+            </div>
+
+            <!-- Column 3: Professional Asset Management & Compliance -->
+            <div class="column-box">
+                <div class="column-title">
+                    <span class="title-icon">🏦</span>            
+                    <br>Professional Asset Management & Compliance<br>
+                </div>
+                
+                <div class="input-group">
+                    <label>Corporate Actions & Asset Servicing</label>
+                    <select>
+                        <option value="">▶️ Lifecycle Management</option>
+                        <option value="income-distribution" class="highlight-blue">Income Distribution (Dividends/Rent)⭐</option>
+                        <option value="asset-appreciation">Asset Appreciation (Token Minting)⭐</option>
+                        <option value="partial-liquidation">Partial Liquidation (Token Burning)⭐</option>
+                        <option value="compliance-actions">Regulatory Actions (Transfer Controls)</option>
+                    </select>
+                    <div class="description">Comprehensive asset servicing including automated income distributions, dynamic token supply adjustments, and regulatory compliance actions throughout the asset lifecycle.</div>
+                </div>
+
+                <div class="input-group">
+                    <label>Investor Relations & Communications</label>
+                    <select>
+                        <option value="">▶️ Stakeholder Management</option>
+                        <option value="automated-reporting" class="highlight-blue">Automated Performance Reporting⭐</option>
+                        <option value="voting-governance">Token Holder Voting System</option>
+                        <option value="communication-hub">Investor Communication Hub</option>
+                        <option value="regulatory-updates">Regulatory Update System</option>
+                    </select>
+                    <div class="description">Professional investor relations tools including real-time performance reporting, governance voting mechanisms, and automated regulatory communications.</div>
+                </div>
+
+                <div class="input-group">
+                    <label>Accredited Investor KYC/AML</label>
+                    <select>
+                        <option value="">▶️ Professional KYC</option>
+                        <option value="accredited-verification" class="highlight-blue">Accredited Investor Verification⭐</option>
+                        <option value="institutional-kyc">Institutional KYC Procedures</option>
+                        <option value="ongoing-monitoring">Ongoing AML Monitoring</option>
+                        <option value="regulatory-reporting">Regulatory Reporting Compliance</option>
+                    </select>
+                    <div class="description">Professional-grade KYC/AML procedures specifically designed for accredited and institutional investors participating in tokenized asset offerings.</div>
+                </div>
+
+                <a href="PlaygroundStablecoin.html" target="_blank" class="nav-button">
+                    Try Stablecoin Framework
+                </a>
+                <a href="https://qbesu-wallet.web.app" target="_blank" class="nav-button">
+                    Try Professional Wallet
+                </a>
+                <a href="https://QuantumBesu.web.app" target="_blank" class="nav-button">
+                    Blockchain Explorer
+                </a>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <a href="http://www.realmatter.io" target="_blank">Contact us: Real Matter Technology Limited</a>
+    </div>
+
+    <!-- Home Button -->
+    <a href="https://realmatterio.github.io/web3" target="_blank" class="home-button" title="Go to Home Page">
+        🏠
+    </a>
+
+    <script>
+        // Dynamic asset type options (placeholder for future implementation)
+        function updateAssetOptions() {
+            const assetType = document.getElementById('asset-type').value;
+            
+            // Update the tokenization button URL
+            updateTokenizationButtonUrl(assetType);
+        }
+
+        // Function to update the tokenization button URL with asset type parameter
+        function updateTokenizationButtonUrl(assetType) {
+            const tokenizationButton = document.getElementById('issuance-button');
+            let baseUrl = 'PlaygroundRwaTokenization.html';
+            
+            if (assetType && assetType !== '') {
+                baseUrl += '?asset-type=' + encodeURIComponent(assetType);
+            }
+            
+            tokenizationButton.href = baseUrl;
+        }
+
+        // Enhanced button interactions
+        document.addEventListener('DOMContentLoaded', function() {
+            const buttons = document.querySelectorAll('.nav-button');
+            
+            buttons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    // Add visual feedback
+                    this.style.transform = 'translateY(-1px) scale(1.02)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 150);
+                });
+            });
+
+            // Add keyboard navigation
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Tab') {
+                    const focusedElement = document.activeElement;
+                    if (focusedElement.tagName === 'SELECT') {
+                        focusedElement.parentElement.style.transform = 'scale(1.02)';
+                        setTimeout(() => {
+                            focusedElement.parentElement.style.transform = '';
+                        }, 200);
+                    }
+                }
+            });
+        });
+
+        // About modal functions
+        function openAboutModal() {
+            const modal = document.getElementById('about-modal');
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeAboutModal() {
+            const modal = document.getElementById('about-modal');
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close modal when clicking outside
+        document.addEventListener('DOMContentLoaded', function() {
+            const modal = document.getElementById('about-modal');
+            
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    closeAboutModal();
+                }
+            });
+
+            // Close modal with Escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && modal.style.display === 'block') {
+                    closeAboutModal();
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

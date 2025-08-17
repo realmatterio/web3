@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArtUSD Protocol - Lending & Staking</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1a0d2e 0%, #16213e 50%, #0f3460 100%);
+            color: #e0e6ff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Top Bar Styles */
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(26, 13, 46, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid #6366f1;
+            padding: 15px 20px;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
+        }
+
+        .pool-balance {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .balance-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(99, 102, 241, 0.1);
+            padding: 10px 20px;
+            border-radius: 10px;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
+        }
+
+        .balance-icon {
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(45deg, #6366f1, #8b5cf6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .balance-text {
+            font-size: 14px;
+            color: #a5b4fc;
+        }
+
+        .balance-amount {
+            font-size: 18px;
+            font-weight: bold;
+            color: #e0e6ff;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-top: 100px;
+            padding: 20px;
+        }
+
+        .protocol-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .protocol-card {
+            background: rgba(22, 33, 62, 0.8);
+            border: 2px solid rgba(99, 102, 241, 0.3);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(99, 102, 241, 0.2);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .protocol-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 60px rgba(99, 102, 241, 0.4);
+            border-color: rgba(99, 102, 241, 0.6);
+        }
+
+        .card-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .card-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #6366f1;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+        }
+
+        .card-subtitle {
+            font-size: 14px;
+            color: #a5b4fc;
+            opacity: 0.8;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: #c7d2fe;
+            font-weight: 500;
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(15, 52, 96, 0.6);
+            border: 2px solid rgba(99, 102, 241, 0.3);
+            border-radius: 10px;
+            color: #e0e6ff;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+        }
+
+        .form-input::placeholder {
+            color: #64748b;
+        }
+
+        .action-button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(45deg, #6366f1, #8b5cf6);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(99, 102, 241, 0.3);
+            margin-top: 10px;
+        }
+
+        .action-button:hover {
+            background: linear-gradient(45deg, #5855f7, #9333ea);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.5);
+        }
+
+        .action-button:active {
+            transform: translateY(0);
+        }
+
+        .secondary-button {
+            background: linear-gradient(45deg, #374151, #4b5563);
+            margin-top: 10px;
+        }
+
+        .secondary-button:hover {
+            background: linear-gradient(45deg, #4b5563, #6b7280);
+        }
+
+        .info-section {
+            background: rgba(15, 52, 96, 0.3);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .info-label {
+            color: #a5b4fc;
+            font-size: 14px;
+        }
+
+        .info-value {
+            color: #e0e6ff;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .glow-text {
+            text-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-active {
+            background: #10b981;
+            box-shadow: 0 0 10px #10b981;
+        }
+
+        .status-warning {
+            background: #f59e0b;
+            box-shadow: 0 0 10px #f59e0b;
+        }
+
+        .status-inactive {
+            background: #6b7280;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+        }
+
+        .footer a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 10px 20px;
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .footer a:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }        
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .main-content {
+                margin-top: 180px; /* Increased margin for mobile when top bar is taller */
+            }
+            
+            .protocol-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .pool-balance {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .protocol-card {
+                padding: 20px;
+            }
+            
+            .top-bar {
+                padding: 15px 10px; /* Reduced horizontal padding on mobile */
+            }
+            
+            .balance-item {
+                padding: 8px 15px; /* Slightly smaller padding on mobile */
+            }
+            
+            .balance-text {
+                font-size: 12px;
+            }
+            
+            .balance-amount {
+                font-size: 16px;
+            }
+        }
+
+        /* Animation Classes */
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        .notification {
+            position: fixed;
+            top: 120px;
+            right: 20px;
+            background: rgba(16, 185, 129, 0.9);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            z-index: 1001;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Bar with Pool Balance -->
+    <div class="top-bar">
+        <div class="pool-balance">
+            <div class="balance-item">
+                <div class="balance-icon">A</div>
+                <div>
+                    <div class="balance-text">ArtUSD Pool</div>
+                    <div class="balance-amount" id="artUsdBalance">1,000,000</div>
+                </div>
+            </div>
+            <div class="balance-item">
+                <div class="balance-icon">C</div>
+                <div>
+                    <div class="balance-text">USDC Pool</div>
+                    <div class="balance-amount" id="usdcBalance">1,000,000</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="protocol-grid">
+
+            <!-- Borrowing Mode Card -->
+            <div class="protocol-card">
+                <div class="card-header">
+                    <h2 class="card-title glow-text">Stablecoin Borrowing</h2>
+                    <h2 class="card-title glow-text">12% APR 💸</h2>
+                    <p class="card-subtitle">Borrow ArtUSD against crypto collateral</p>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Collateral Token</label>
+                    <select class="form-select" id="collateralToken" onchange="toggleNftContract()">
+                        <option value="eth">ETH</option>
+                        <option value="btc">BTC</option>
+                        <option value="usdc">USDC</option>
+                        <option value="art-nft">Real Art NFT</option>
+                    </select>
+                </div>
+                
+                <div class="form-group" id="nftContractGroup" style="display: none;">
+                    <label class="form-label">Collateral Contract</label>
+                    <input type="text" class="form-input" id="collateralContract" placeholder="Enter ERC721 Contract Address">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" id="collateralAmountLabel">Collateral Amount</label>
+                    <input type="number" class="form-input" id="collateralAmount" placeholder="Enter collateral amount">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">ArtUSD to Borrow</label>
+                    <input type="number" class="form-input" id="borrowAmount" placeholder="Max borrowable will be calculated">
+                </div>
+
+                <button class="action-button" onclick="borrow()">
+                    Borrow ArtUSD
+                </button>
+
+                <button class="action-button secondary-button" onclick="toggleRepayForm()">
+                    Repay Loan
+                </button>
+                
+                <div id="repayForm" style="display: none; margin-top: 15px;">
+                    <div class="form-group">
+                        <label class="form-label">ArtUSD Amount to Repay</label>
+                        <input type="number" class="form-input" id="repayAmount" placeholder="Enter ArtUSD amount to repay">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">USDC Interest Amount</label>
+                        <input type="number" class="form-input" id="interestAmount" placeholder="Enter USDC interest amount">
+                    </div>
+                    <button class="action-button" onclick="executeRepay()">
+                        Execute Repayment
+                    </button>
+                </div>
+
+                <div class="info-section">
+                    <div class="info-row">
+                        <span class="info-label">LTV Ratio:</span>
+                        <span class="info-value glow-text">70%</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Annual Interest:</span>
+                        <span class="info-value glow-text">12% (paid in USDC)</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Active Loan:</span>
+                        <span class="info-value" id="activeLoan">0 ArtUSD</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Collateral Value:</span>
+                        <span class="info-value" id="collateralValue">$0</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Health Factor:</span>
+                        <span class="info-value">
+                            <span class="status-indicator status-active"></span>Healthy
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lending Mode Card -->
+            <div class="protocol-card">
+                <div class="card-header">
+                    <h2 class="card-title glow-text">Stablecoin Lending</h2>
+                    <h2 class="card-title glow-text">5% APY🏦</h2>
+                    <p class="card-subtitle">Deposit ArtUSD/USDC and earn annual interest</p>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Select Token</label>
+                    <select class="form-select" id="lendingToken">
+                        <option value="artUSD">ArtUSD</option>
+                        <option value="usdc">USDC</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Amount to Deposit</label>
+                    <input type="number" class="form-input" id="lendingAmount" placeholder="Enter amount">
+                </div>
+
+                <button class="action-button" onclick="deposit()">
+                    Deposit & Start Earning
+                </button>
+
+                <button class="action-button secondary-button" onclick="withdraw()">
+                    Withdraw with Interest
+                </button>
+
+                <div class="info-section">
+                    <div class="info-row">
+                        <span class="info-label">Annual Interest Rate:</span>
+                        <span class="info-value glow-text">5.00%</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Your Deposits:</span>
+                        <span class="info-value" id="userDeposits">0 ArtUSD, 0 USDC</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Accrued Interest:</span>
+                        <span class="info-value" id="accruedInterest">0 ArtUSD</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Status:</span>
+                        <span class="info-value">
+                            <span class="status-indicator status-active"></span>Active
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Staking/Farming Mode Card -->
+            <div class="protocol-card">
+                <div class="card-header">
+                    <h2 class="card-title glow-text">Stablecoin Staking</h2>
+                    <h2 class="card-title glow-text">5%-8% APY🌾</h2>
+                    <p class="card-subtitle">Stake tokens with lock-up periods for higher yields</p>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Token to Stake</label>
+                    <select class="form-select" id="stakingToken">
+                        <option value="artUSD">ArtUSD</option>
+                        <option value="usdc">USDC</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Amount to Stake</label>
+                    <input type="number" class="form-input" id="stakingAmount" placeholder="Enter amount to stake">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Lock-up Period</label>
+                    <select class="form-select" id="lockPeriod" onchange="updateYieldRate()">
+                        <option value="30">30 Days (5% APY)</option>
+                        <option value="90">90 Days (6% APY)</option>
+                        <option value="180">180 Days (8% APY)</option>
+                    </select>
+                </div>
+
+                <button class="action-button" onclick="stake()">
+                    Stake & Lock Tokens
+                </button>
+
+                <button class="action-button secondary-button" onclick="toggleUnstakeForm()">
+                    Unstake & Claim Yield
+                </button>
+                
+                <div id="unstakeForm" style="display: none; margin-top: 15px;">
+                    <div class="form-group">
+                        <label class="form-label">Select Stake to Unstake</label>
+                        <select class="form-select" id="stakeIndexSelect">
+                            <option value="">Select a stake...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Stake Details</label>
+                        <div class="info-section" id="selectedStakeDetails">
+                            <div class="info-row">
+                                <span class="info-label">Amount:</span>
+                                <span class="info-value" id="selectedStakeAmount">-</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Token:</span>
+                                <span class="info-value" id="selectedStakeToken">-</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Lock Period:</span>
+                                <span class="info-value" id="selectedStakePeriod">-</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Unlock Time:</span>
+                                <span class="info-value" id="selectedStakeUnlock">-</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Expected Yield:</span>
+                                <span class="info-value" id="selectedStakeYield">-</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="action-button" onclick="executeUnstake()">
+                        Execute Unstake
+                    </button>
+                </div>
+
+                <div class="info-section">
+                    <div class="info-row">
+                        <span class="info-label">Current Yield Rate:</span>
+                        <span class="info-value glow-text" id="currentYieldRate">4% APY</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Your Stakes:</span>
+                        <span class="info-value" id="userStakes">0 active stakes</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Pending Yield:</span>
+                        <span class="info-value" id="pendingYield">0 ArtUSD</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Next Unlock:</span>
+                        <span class="info-value" id="nextUnlock">No active stakes</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div class="notification" id="notification"></div>
+
+    <div class="footer">
+        <a href="http://www.realmatter.io" target="_blank">Contact us: Real Matter Technology Limited</a>
+    </div>
+
+    <script>
+        // Mock data storage
+        let poolData = {
+            artUSD: 1000000,
+            usdc: 1000000
+        };
+
+        let userData = {
+            deposits: { artUSD: 0, usdc: 0 },
+            loans: { amount: 0, collateral: 0 },
+            stakes: []
+        };
+
+        // Update pool balances display
+        function updatePoolDisplay() {
+            document.getElementById('artUsdBalance').textContent = poolData.artUSD.toLocaleString();
+            document.getElementById('usdcBalance').textContent = poolData.usdc.toLocaleString();
+        }
+
+        // Show notification
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification show ${type}`;
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Lending Protocol Functions
+        function deposit() {
+            const token = document.getElementById('lendingToken').value;
+            const amount = parseFloat(document.getElementById('lendingAmount').value);
+            
+            if (!amount || amount <= 0) {
+                showNotification('Please enter a valid amount', 'error');
+                return;
+            }
+
+            // Mock contract call: deposit(token, amount)
+            userData.deposits[token] += amount;
+            poolData[token] += amount;
+            
+            updatePoolDisplay();
+            updateUserDeposits();
+            showNotification(`Successfully deposited ${amount} ${token.toUpperCase()}`);
+            
+            // Clear input
+            document.getElementById('lendingAmount').value = '';
+        }
+
+        function withdraw() {
+            const token = document.getElementById('lendingToken').value;
+            const amount = parseFloat(document.getElementById('lendingAmount').value);
+            
+            if (!amount || amount <= 0 || amount > userData.deposits[token]) {
+                showNotification('Invalid withdrawal amount', 'error');
+                return;
+            }
+
+            // Mock contract call: withdraw(token, amount)
+            const interest = amount * 0.05 * (30 / 365); // Mock 30-day interest
+            userData.deposits[token] -= amount;
+            poolData[token] -= (amount + interest);
+            
+            updatePoolDisplay();
+            updateUserDeposits();
+            showNotification(`Withdrawn ${amount} ${token.toUpperCase()} + ${interest.toFixed(2)} ArtUSD interest`);
+            
+            document.getElementById('lendingAmount').value = '';
+        }
+
+        function updateUserDeposits() {
+            document.getElementById('userDeposits').textContent = 
+                `${userData.deposits.artUSD} ArtUSD, ${userData.deposits.usdc} USDC`;
+            
+            const totalInterest = (userData.deposits.artUSD + userData.deposits.usdc) * 0.05 * (30 / 365);
+            document.getElementById('accruedInterest').textContent = `${totalInterest.toFixed(2)} ArtUSD`;
+        }
+
+        // Borrowing Protocol Functions
+        function toggleNftContract() {
+            const collateralToken = document.getElementById('collateralToken').value;
+            const nftContractGroup = document.getElementById('nftContractGroup');
+            const collateralAmountLabel = document.getElementById('collateralAmountLabel');
+            
+            if (collateralToken === 'art-nft') {
+                nftContractGroup.style.display = 'block';
+                collateralAmountLabel.textContent = 'Token ID';
+                document.getElementById('collateralAmount').placeholder = 'Enter NFT Token ID';
+            } else {
+                nftContractGroup.style.display = 'none';
+                collateralAmountLabel.textContent = 'Collateral Amount';
+                document.getElementById('collateralAmount').placeholder = 'Enter collateral amount';
+            }
+        }
+
+        function toggleRepayForm() {
+            const repayForm = document.getElementById('repayForm');
+            const button = event.target;
+            
+            if (repayForm.style.display === 'none' || repayForm.style.display === '') {
+                repayForm.style.display = 'block';
+                button.textContent = 'Cancel Repay';
+            } else {
+                repayForm.style.display = 'none';
+                button.textContent = 'Repay Loan';
+                // Clear form fields
+                document.getElementById('repayAmount').value = '';
+                document.getElementById('interestAmount').value = '';
+            }
+        }
+
+        function executeRepay() {
+            const repayAmount = parseFloat(document.getElementById('repayAmount').value);
+            const interestAmount = parseFloat(document.getElementById('interestAmount').value);
+            
+            if (!repayAmount || !interestAmount) {
+                showNotification('Please fill in all repayment fields', 'error');
+                return;
+            }
+
+            // Mock contract call: repay(repayAmount, interestAmount)
+            userData.loans.amount -= repayAmount;
+            if (userData.loans.amount <= 0) {
+                userData.loans.collateral = 0;
+                userData.loans.amount = 0;
+            }
+            
+            poolData.artUSD += repayAmount;
+            
+            updatePoolDisplay();
+            updateLoanInfo();
+            showNotification(`Repaid ${repayAmount} ArtUSD + ${interestAmount} USDC interest`);
+            
+            // Hide form and reset button
+            toggleRepayForm();
+        }
+
+        function borrow() {
+            const collateralToken = document.getElementById('collateralToken').value;
+            const collateralAmount = parseFloat(document.getElementById('collateralAmount').value);
+            const borrowAmount = parseFloat(document.getElementById('borrowAmount').value);
+            
+            if (!collateralAmount || !borrowAmount) {
+                showNotification('Please fill in all fields', 'error');
+                return;
+            }
+
+            // For NFT collateral, also check contract address
+            if (collateralToken === 'art-nft') {
+                const contractAddress = document.getElementById('collateralContract').value;
+                if (!contractAddress) {
+                    showNotification('Please enter the ERC721 contract address', 'error');
+                    return;
+                }
+            }
+
+            // Mock price calculation (simplified)
+            let collateralValue;
+            if (collateralToken === 'art-nft') {
+                collateralValue = collateralAmount * 10000; // Mock NFT value
+            } else {
+                collateralValue = collateralAmount * (collateralToken === 'eth' ? 3000 : collateralToken === 'btc' ? 50000 : 1);
+            }
+            const maxBorrow = collateralValue * 0.7; // 70% LTV
+            
+            if (borrowAmount > maxBorrow) {
+                showNotification(`Max borrowable amount: ${maxBorrow.toFixed(2)} ArtUSD`, 'error');
+                return;
+            }
+
+            // Mock contract call: borrow(collateralToken, collateralAmount, borrowAmount)
+            userData.loans.amount = borrowAmount;
+            userData.loans.collateral = collateralAmount;
+            poolData.artUSD -= borrowAmount;
+            
+            updatePoolDisplay();
+            updateLoanInfo();
+            showNotification(`Successfully borrowed ${borrowAmount} ArtUSD`);
+            
+            document.getElementById('collateralAmount').value = '';
+            document.getElementById('borrowAmount').value = '';
+            if (collateralToken === 'art-nft') {
+                document.getElementById('collateralContract').value = '';
+            }
+        }
+
+        function repay() {
+            // This function is kept for backward compatibility but now just calls toggleRepayForm
+            toggleRepayForm();
+        }
+
+        function updateLoanInfo() {
+            document.getElementById('activeLoan').textContent = `${userData.loans.amount} ArtUSD`;
+            const collateralValue = userData.loans.collateral * 3000; // Mock ETH price
+            document.getElementById('collateralValue').textContent = `$${collateralValue.toLocaleString()}`;
+        }
+
+        // Staking Protocol Functions
+        function toggleUnstakeForm() {
+            const unstakeForm = document.getElementById('unstakeForm');
+            const button = event.target;
+            
+            if (unstakeForm.style.display === 'none' || unstakeForm.style.display === '') {
+                unstakeForm.style.display = 'block';
+                button.textContent = 'Cancel Unstake';
+                updateStakeSelector();
+            } else {
+                unstakeForm.style.display = 'none';
+                button.textContent = 'Unstake & Claim Yield';
+                // Clear selection
+                document.getElementById('stakeIndexSelect').value = '';
+                clearSelectedStakeDetails();
+            }
+        }
+
+        function updateStakeSelector() {
+            const selector = document.getElementById('stakeIndexSelect');
+            selector.innerHTML = '<option value="">Select a stake...</option>';
+            
+            userData.stakes.forEach((stake, index) => {
+                const unlockDate = new Date(stake.unlockTime).toLocaleDateString();
+                const canUnstake = Date.now() >= stake.unlockTime;
+                const status = canUnstake ? '✓ Unlocked' : '🔒 Locked';
+                const option = document.createElement('option');
+                option.value = index;
+                option.textContent = `Stake ${index + 1}: ${stake.amount} ${stake.token.toUpperCase()} - ${status} (${unlockDate})`;
+                if (!canUnstake) {
+                    option.style.color = '#f59e0b';
+                }
+                selector.appendChild(option);
+            });
+            
+            selector.onchange = function() {
+                updateSelectedStakeDetails(this.value);
+            };
+        }
+
+        function updateSelectedStakeDetails(stakeIndex) {
+            if (stakeIndex === '') {
+                clearSelectedStakeDetails();
+                return;
+            }
+            
+            const stake = userData.stakes[stakeIndex];
+            const yieldRates = { 30: 0.05, 90: 0.06, 180: 0.08 };
+            const expectedYield = stake.amount * yieldRates[stake.lockPeriod] * (stake.lockPeriod / 365);
+            const canUnstake = Date.now() >= stake.unlockTime;
+            
+            document.getElementById('selectedStakeAmount').textContent = `${stake.amount} ${stake.token.toUpperCase()}`;
+            document.getElementById('selectedStakeToken').textContent = stake.token.toUpperCase();
+            document.getElementById('selectedStakePeriod').textContent = `${stake.lockPeriod} days`;
+            document.getElementById('selectedStakeUnlock').textContent = new Date(stake.unlockTime).toLocaleDateString();
+            document.getElementById('selectedStakeYield').textContent = `${expectedYield.toFixed(2)} ArtUSD`;
+            
+            // Update the execute button based on unlock status
+            const executeButton = document.querySelector('#unstakeForm .action-button');
+            if (canUnstake) {
+                executeButton.disabled = false;
+                executeButton.textContent = 'Execute Unstake';
+                executeButton.style.opacity = '1';
+            } else {
+                executeButton.disabled = true;
+                executeButton.textContent = 'Still Locked';
+                executeButton.style.opacity = '0.5';
+            }
+        }
+
+        function clearSelectedStakeDetails() {
+            document.getElementById('selectedStakeAmount').textContent = '-';
+            document.getElementById('selectedStakeToken').textContent = '-';
+            document.getElementById('selectedStakePeriod').textContent = '-';
+            document.getElementById('selectedStakeUnlock').textContent = '-';
+            document.getElementById('selectedStakeYield').textContent = '-';
+            
+            const executeButton = document.querySelector('#unstakeForm .action-button');
+            executeButton.disabled = false;
+            executeButton.textContent = 'Execute Unstake';
+            executeButton.style.opacity = '1';
+        }
+
+        function executeUnstake() {
+            const stakeIndex = document.getElementById('stakeIndexSelect').value;
+            
+            if (stakeIndex === '') {
+                showNotification('Please select a stake to unstake', 'error');
+                return;
+            }
+
+            const stake = userData.stakes[stakeIndex];
+            const now = Date.now();
+            
+            if (now < stake.unlockTime) {
+                showNotification('Lock period not ended yet', 'error');
+                return;
+            }
+
+            // Mock contract call: unstake(stakeIndex)
+            const yieldRates = { 30: 0.05, 90: 0.06, 180: 0.08 };
+            const yield = stake.amount * yieldRates[stake.lockPeriod] * (stake.lockPeriod / 365);
+            
+            poolData[stake.token] -= stake.amount;
+            poolData.artUSD -= yield; // Yield paid in ArtUSD
+            userData.stakes.splice(stakeIndex, 1);
+            
+            updatePoolDisplay();
+            updateStakeInfo();
+            showNotification(`Unstaked ${stake.amount} ${stake.token.toUpperCase()} + ${yield.toFixed(2)} ArtUSD yield`);
+            
+            // Hide form and reset button
+            toggleUnstakeForm();
+        }
+
+        function stake() {
+            const token = document.getElementById('stakingToken').value;
+            const amount = parseFloat(document.getElementById('stakingAmount').value);
+            const lockPeriod = parseInt(document.getElementById('lockPeriod').value);
+            
+            if (!amount || amount <= 0) {
+                showNotification('Please enter a valid amount', 'error');
+                return;
+            }
+
+            // Mock contract call: stake(token, amount, lockPeriod)
+            const stake = {
+                token: token,
+                amount: amount,
+                lockPeriod: lockPeriod,
+                stakeTime: Date.now(),
+                unlockTime: Date.now() + (lockPeriod * 24 * 60 * 60 * 1000)
+            };
+            
+            userData.stakes.push(stake);
+            poolData[token] += amount;
+            
+            updatePoolDisplay();
+            updateStakeInfo();
+            showNotification(`Successfully staked ${amount} ${token.toUpperCase()} for ${lockPeriod} days`);
+            
+            document.getElementById('stakingAmount').value = '';
+        }
+
+        function unstake() {
+            // This function is kept for backward compatibility but now just calls toggleUnstakeForm
+            toggleUnstakeForm();
+        }
+
+        function updateYieldRate() {
+            const lockPeriod = document.getElementById('lockPeriod').value;
+            const rates = { 30: '5% APY', 90: '6% APY', 180: '8% APY' };
+            document.getElementById('currentYieldRate').textContent = rates[lockPeriod];
+        }
+
+        function updateStakeInfo() {
+            document.getElementById('userStakes').textContent = `${userData.stakes.length} active stakes`;
+            
+            let totalYield = 0;
+            userData.stakes.forEach(stake => {
+                const yieldRates = { 30: 0.05, 90: 0.06, 180: 0.08 };
+                totalYield += stake.amount * yieldRates[stake.lockPeriod] * (stake.lockPeriod / 365);
+            });
+            document.getElementById('pendingYield').textContent = `${totalYield.toFixed(2)} ArtUSD`;
+            
+            if (userData.stakes.length > 0) {
+                const nextUnlock = Math.min(...userData.stakes.map(s => s.unlockTime));
+                document.getElementById('nextUnlock').textContent = new Date(nextUnlock).toLocaleDateString();
+            } else {
+                document.getElementById('nextUnlock').textContent = 'No active stakes';
+            }
+        }
+
+        // Initialize display
+        updatePoolDisplay();
+        updateUserDeposits();
+        updateLoanInfo();
+        updateStakeInfo();
+    </script>
+</body>
+</html>
