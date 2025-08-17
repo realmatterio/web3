@@ -447,18 +447,29 @@
 				}
 
 				.modal-content {
-						background: linear-gradient(135deg, #1c1c1e 0%, #000000 100%);
+						background: linear-gradient(135deg, #1c1c1e 0%, #051044 100%);
 						padding: 2rem;
 						border-radius: 15px;
 						max-width: 600px;
 						width: 90%;
 						max-height: 80vh;
 						overflow-y: auto;
-						color: #f2f2f7;
+						color: #6666aa;
 						border: 2px solid #3a3a3c;
 						box-shadow: 
 								0 20px 40px rgba(0, 0, 0, 0.8),
 								0 8px 25px rgba(0, 0, 0, 0.6);
+				}
+
+				.modal-content h1, 
+				.modal-content h2, 
+				.modal-content h3, 
+				.modal-content h4, 
+				.modal-content h5, 
+				.modal-content h6 {
+						background: transparent;
+						color: #8181f1;
+						margin: 1rem 0 0.5rem 0;
 				}
 
 				.modal-content pre {
@@ -517,6 +528,17 @@
 								gap: 1rem;
 						}
 						
+						/* Remove borders from module groups to save space */
+						.module-group.tokenization,
+						.module-group.lifecycle {
+								border: none;
+								padding: 1rem;
+						}
+						
+						.module-group-grid {
+								grid-template-columns: 1fr;
+						}
+						
 						/* Reduce font sizes for mobile */
 						.logo {
 								font-size: 1.1rem;
@@ -566,6 +588,19 @@
 				}
 				
 				@media (max-width: 480px) {
+						/* Remove borders from module groups to save space */
+						.module-group.tokenization,
+						.module-group.lifecycle {
+								border: none;
+								padding: 0.8rem;
+								margin-bottom: 2rem;
+						}
+						
+						.module-group-grid {
+								grid-template-columns: 1fr;
+								gap: 1.5rem;
+						}
+						
 						/* Further reduce font sizes for small mobile */
 						.logo {
 								font-size: 1rem;
