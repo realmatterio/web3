@@ -447,24 +447,38 @@
 				}
 
 				.modal-content {
-						background: white;
+						background: linear-gradient(135deg, #1c1c1e 0%, #000000 100%);
 						padding: 2rem;
 						border-radius: 15px;
 						max-width: 600px;
 						width: 90%;
 						max-height: 80vh;
 						overflow-y: auto;
+						color: #f2f2f7;
+						border: 2px solid #3a3a3c;
+						box-shadow: 
+								0 20px 40px rgba(0, 0, 0, 0.8),
+								0 8px 25px rgba(0, 0, 0, 0.6);
+				}
+
+				.modal-content pre {
+						color: #f2f2f7;
+						font-size: 0.8rem;
+						line-height: 1.3;
+						white-space: pre-wrap;
+						font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 				}
 
 				.close-modal {
 						float: right;
 						font-size: 1.5rem;
 						cursor: pointer;
-						color: #aaa;
+						color: #8e8e93;
+						transition: color 0.3s ease;
 				}
 
 				.close-modal:hover {
-						color: #000;
+						color: #f2f2f7;
 				}
 
 				.footer {
@@ -501,6 +515,108 @@
 						.nav-container {
 								flex-direction: column;
 								gap: 1rem;
+						}
+						
+						/* Reduce font sizes for mobile */
+						.logo {
+								font-size: 1.1rem;
+						}
+						
+						.role-switch {
+								font-size: 1rem;
+						}
+						
+						.module-card h3 {
+								font-size: 1.3rem;
+						}
+						
+						.module-card h4 {
+								font-size: 1.1rem;
+						}
+						
+						.guide-button {
+								font-size: 0.9rem;
+						}
+						
+						.button {
+								font-size: 0.85rem;
+								padding: 10px 18px;
+						}
+						
+						.footer a {
+								font-size: 0.8rem;
+								padding: 8px 16px;
+						}
+						
+						.modal-content {
+								padding: 1.5rem;
+								font-size: 0.85rem;
+						}
+						
+						.modal-content pre {
+								font-size: 0.75rem;
+								line-height: 1.2;
+						}
+						
+						.home-button {
+								width: 50px;
+								height: 50px;
+								font-size: 20px;
+						}
+				}
+				
+				@media (max-width: 480px) {
+						/* Further reduce font sizes for small mobile */
+						.logo {
+								font-size: 1rem;
+						}
+						
+						.role-switch {
+								font-size: 0.9rem;
+								padding: 6px 12px;
+						}
+						
+						.module-card h3 {
+								font-size: 1.1rem;
+						}
+						
+						.module-card h4 {
+								font-size: 1rem;
+						}
+						
+						.guide-button {
+								font-size: 0.8rem;
+								padding: 6px 12px;
+						}
+						
+						.button {
+								font-size: 0.8rem;
+								padding: 8px 15px;
+						}
+						
+						.footer a {
+								font-size: 0.75rem;
+								padding: 6px 12px;
+						}
+						
+						.modal-content {
+								padding: 1rem;
+								font-size: 0.8rem;
+						}
+						
+						.modal-content pre {
+								font-size: 0.7rem;
+								line-height: 1.1;
+						}
+						
+						.close-modal {
+								font-size: 1.3rem;
+						}
+						
+						.home-button {
+								width: 45px;
+								height: 45px;
+								font-size: 18px;
 						}
 				}
 
@@ -564,13 +680,13 @@
 <body>
 		<header class="header">
 				<div class="nav-container">
-						<div class="logo">🔷 RWA Tokenization Playground</div>
+						<div class="logo">RWA Tokenization Playground</div>
 						<div class="user-info">
 								<div class="user-role" id="currentRole">Issuer ⏩</div>
 								<div class="role-icons">
-										<div class="role-icon active" id="issuerIcon" onclick="switchToRole('issuer')" title="Issuer ⏩">🏛</div>
-										<div class="role-icon" id="investorIcon" onclick="switchToRole('investor')" title="Investor ⏩">👤</div>
-										<div class="role-icon" id="adminIcon" onclick="switchToRole('admin')" title="Admin ⏩">⚙️</div>
+										<div class="role-icon active" id="issuerIcon" onclick="switchToRole('issuer')" title="Issuer">🏛</div>
+										<div class="role-icon" id="investorIcon" onclick="switchToRole('investor')" title="Investor">👤</div>
+										<div class="role-icon" id="adminIcon" onclick="switchToRole('admin')" title="Admin">⚙️</div>
 								</div>
 						</div>
 				</div>
@@ -1173,7 +1289,8 @@
 						
 						tourMessage += '\n\n💡 TIP: Use the guide buttons (🔍) in each module to learn specific concepts and best practices!';
 						
-						alert(tourMessage);
+						// Use modal instead of alert to prevent content truncation
+						showModal('<pre style="font-family: \'Segoe UI\', sans-serif; white-space: pre-wrap; line-height: 1.3; font-size: 0.8rem; color: #f2f2f7;">' + tourMessage + '</pre>');
 				}
 
 				// Enhanced interactive tour with step-by-step guidance
