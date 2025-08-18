@@ -643,6 +643,113 @@
         .home-button {
             animation: homeButtonPulse 3s ease-in-out infinite;
         }        
+
+        .btn.guide {
+            background: rgba(255, 255, 255, 0.08);
+            color: #888;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            font-size: 0.8rem;
+            padding: 0.4rem 0.8rem;
+            margin-left: auto;
+            display: block;
+            margin-top: 0.75rem;
+            text-align: right;
+            width: fit-content;
+            align-self: flex-end;
+            font-weight: 400;
+            opacity: 0.8;
+            cursor: pointer;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .btn.guide:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: #555;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            opacity: 1;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            color: #ffffff;
+        }
+
+        .modal-header {
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin: 0;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .close:hover {
+            color: #ffffff;
+        }
+
+        .modal-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            border-left: 4px solid #3498db;
+        }
+
+        .modal-section h3 {
+            color: #3498db;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .modal-section p {
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .modal-section ul {
+            padding-left: 20px;
+            line-height: 1.6;
+        }
+
+        .modal-section li {
+            margin-bottom: 8px;
+        }
     </style>
 </head>
 <body>
@@ -653,12 +760,16 @@
             <button class="button small" onclick="loadSampleData()" style="flex: 1;">Load Sample Data</button>
             <button class="button small secondary" onclick="clearAllData()" style="flex: 1;">Clear All Data</button>
         </div>
+        <div style="text-align: center; margin-top: 10px;">
+            <button class="button small" onclick="showGuideModal()" style="background: rgba(52, 152, 219, 0.2); color: rgba(52, 152, 219, 1); border: 1px solid rgba(52, 152, 219, 0.3);">📖 Guide Tour</button>
+        </div>
       </div>
           
         <div class="main-grid">
             <!-- Stablecoin Issuance Column -->
             <div class="column-box">
                 <div class="column-title">Stablecoin Issuance</div>
+                <button class="btn guide" onclick="showColumnGuide('issuance')">ℹ️ Guide</button>
                 
                 <!-- Stablecoin Contract Constructor Row -->
                 <div class="row-box">
@@ -795,6 +906,7 @@
             <!-- Fund Pool Column -->
             <div class="column-box">
                 <div class="column-title">Fund Pool</div>
+                <button class="btn guide" onclick="showColumnGuide('fundpool')">ℹ️ Guide</button>
                 
                 <!-- Fund Pool Row -->
                 <div class="row-box">
@@ -857,6 +969,7 @@
             <!-- Primary Exchange Market Column -->
             <div class="column-box">
                 <div class="column-title">Primary Exchange</div>
+                <button class="btn guide" onclick="showColumnGuide('exchange')">ℹ️ Guide</button>
 
                 <!-- Stablecoin Buy and Sell Row -->
                 <div class="row-box">
@@ -895,6 +1008,19 @@
     <a href="https://realmatterio.github.io/web3" target="_blank" class="home-button" title="Go to Home Page">
         🏠
     </a>
+
+    <!-- Modal for Guide Tour -->
+    <div id="guideModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <h2 class="modal-title" id="modalTitle">Stablecoin Playground Guide</h2>
+            </div>
+            <div id="modalBody">
+                <!-- Modal content will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
 
     <script>
         // Global variables
@@ -1088,6 +1214,7 @@
             circulatingSupply = totalSupply; // Assuming all minted stablecoins are in circulation
             document.getElementById('circulating-supply').textContent = circulatingSupply.toFixed(6);
             updateFundPools();
+            updateCollateralizationStatus();
         }
         
         // Calculate maximum stablecoin supply automatically based on collateral and token price
@@ -1113,6 +1240,8 @@
                 calculationDisplay.style.display = 'none';
                 document.getElementById('stablecoin-total-supply').textContent = '0.000000';
             }
+            
+            updateCollateralizationStatus();
         }
         
         // Update reserve fund
@@ -1132,6 +1261,7 @@
         function launchICO() {
             icoAmount = parseFloat(document.getElementById('ico-amount-input').value) || 0;
             updateReserve();
+            updateCollateralizationStatus();
             alert(`ICO Launched for $${icoAmount.toFixed(2)}`);
         }
         
@@ -1141,6 +1271,8 @@
             exchangeNetStablecoin = 0;
             document.getElementById('exchange-net-usd').textContent = exchangeNetUSD.toFixed(2);
             document.getElementById('exchange-net-stablecoin').textContent = exchangeNetStablecoin.toFixed(2);
+            updateCollateralizationStatus();
+            updateFundPools();
             alert('Liquidity Pool Cleared!');
         }
         
@@ -1211,6 +1343,7 @@
             exchangeNetUSD += amount;
             exchangeNetStablecoin -= stablecoinsBought;
             updateReserve();
+            updateCollateralizationStatus();
             checkArbitrage('buy', tokenPrice);
             
             document.getElementById('trade-amount').value = '';
@@ -1230,6 +1363,7 @@
             exchangeNetUSD -= amount;
             exchangeNetStablecoin += stablecoinsSold;
             updateReserve();
+            updateCollateralizationStatus();
             checkArbitrage('sell', tokenPrice);
             
             document.getElementById('trade-amount').value = '';
@@ -1441,6 +1575,160 @@
             calculateStablecoinSupply();
             
             alert('All data cleared successfully!');
+        }
+
+        // Modal functionality
+        function showGuideModal() {
+            const modalTitle = document.getElementById('modalTitle');
+            const modalBody = document.getElementById('modalBody');
+            
+            modalTitle.textContent = 'Stablecoin Playground Guide Tour';
+            modalBody.innerHTML = `
+                <div class="modal-section">
+                    <h3>🏛️ What is a Stablecoin Playground?</h3>
+                    <p>This is an interactive simulation environment where you can experiment with stablecoin creation, management, and trading mechanisms. Learn how different collateral types affect stablecoin stability and explore various economic scenarios.</p>
+                </div>
+                
+                <div class="modal-section">
+                    <h3>🔗 Column Overview</h3>
+                    <ul>
+                        <li><strong>Stablecoin Issuance:</strong> Create and manage your stablecoin contract, collateral backing, and token minting</li>
+                        <li><strong>Fund Pool:</strong> Monitor liquidity pools, arbitrage mechanisms, and fund distribution</li>
+                        <li><strong>Primary Exchange:</strong> Trade stablecoins and observe market dynamics through order books</li>
+                    </ul>
+                </div>
+                
+                <div class="modal-section">
+                    <h3>🚀 Getting Started</h3>
+                    <p>1. Click "Load Sample Data" to populate the playground with demo values</p>
+                    <p>2. Experiment with different collateral types (Asset-backed, Fiat-pegged, Commodity-pegged)</p>
+                    <p>3. Try minting tokens, trading, and observing how the collateralization status changes</p>
+                    <p>4. Use the individual column guides (ℹ️) for detailed explanations of each section</p>
+                </div>
+                
+                <div class="modal-section">
+                    <h3>⚡ Key Features</h3>
+                    <ul>
+                        <li>Real-time collateralization monitoring</li>
+                        <li>Automated arbitrage simulation</li>
+                        <li>Multiple collateral type support</li>
+                        <li>Interactive trading environment</li>
+                        <li>Smart contract address generation</li>
+                    </ul>
+                </div>
+            `;
+            
+            document.getElementById('guideModal').style.display = 'block';
+        }
+
+        function showColumnGuide(columnType) {
+            const modalTitle = document.getElementById('modalTitle');
+            const modalBody = document.getElementById('modalBody');
+            
+            switch(columnType) {
+                case 'issuance':
+                    modalTitle.textContent = 'Stablecoin Issuance Guide';
+                    modalBody.innerHTML = `
+                        <div class="modal-section">
+                            <h3>🏭 Stablecoin Contract Constructor</h3>
+                            <p>Create your stablecoin smart contract by entering a name and generating the contract address. This simulates deploying an ERC-20 compatible stablecoin contract to Ethereum.</p>
+                        </div>
+                        
+                        <div class="modal-section">
+                            <h3>💎 Collateral Proof</h3>
+                            <p>Choose your collateral type and manage backing assets:</p>
+                            <ul>
+                                <li><strong>Asset-backed:</strong> Use NFTs representing real-world assets (RWAs)</li>
+                                <li><strong>Fiat-pegged:</strong> Backed by fiat currency reserves</li>
+                                <li><strong>Commodity-pegged:</strong> Backed by physical commodities</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="modal-section">
+                            <h3>💰 ICO & Reserve Funding</h3>
+                            <p>Manage your stablecoin's financial backing through ICO fundraising (asset-backed only) and direct reserve deposits/withdrawals. Monitor the collateralization status in real-time.</p>
+                        </div>
+                        
+                        <div class="modal-section">
+                            <h3>🪙 Token Mint-Burn</h3>
+                            <p>Control your stablecoin supply based on collateral value. The system automatically calculates maximum supply and allows you to set circulation ratios to maintain proper backing.</p>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'fundpool':
+                    modalTitle.textContent = 'Fund Pool Guide';
+                    modalBody.innerHTML = `
+                        <div class="modal-section">
+                            <h3>📊 Fund Pool Comparison</h3>
+                            <p>View real-time comparison between USD reserves and stablecoin pools. This helps you understand the balance between backing assets and circulating tokens.</p>
+                        </div>
+                        
+                        <div class="modal-section">
+                            <h3>⚖️ Arbitrage Price Band</h3>
+                            <p>Set upper and lower bounds for your stablecoin's price. When market price deviates beyond these bounds, automatic arbitrage mechanisms trigger to restore the peg.</p>
+                        </div>
+                        
+                        <div class="modal-section">
+                            <h3>🌊 Liquidity Pool</h3>
+                            <p>Monitor the exchange's USD and stablecoin liquidity. This shows how much capital is available for trading and provides suggested liquidity ratios for optimal market making.</p>
+                        </div>
+                        
+                        <div class="modal-section">
+                            <h3>🎯 Key Metrics</h3>
+                            <ul>
+                                <li>Exchange net positions in USD and stablecoins</li>
+                                <li>Suggested liquidity based on 30% of total pools</li>
+                                <li>Real-time percentage distribution of funds</li>
+                            </ul>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'exchange':
+                    modalTitle.textContent = 'Primary Exchange Guide';
+                    modalBody.innerHTML = `
+                        <div class="modal-section">
+                            <h3>💹 Stablecoin Trading</h3>
+                            <p>Buy and sell stablecoins at current market prices. Each transaction affects the exchange's liquidity pools and can trigger arbitrage opportunities.</p>
+                        </div>
+                        
+                        <div class="modal-section">
+                            <h3>📋 Regular Order Book</h3>
+                            <p>View all regular trading activity including buy/sell orders, volumes, and execution prices. Orders are marked with checkmarks upon successful completion.</p>
+                        </div>
+                        
+                        <div class="modal-section">
+                            <h3>⚡ Arbitrage Order Book</h3>
+                            <p>Monitor automatic arbitrage trades that execute when prices move outside the defined bounds. These help maintain the stablecoin's peg to its target value.</p>
+                        </div>
+                        
+                        <div class="modal-section">
+                            <h3>🔄 How It Works</h3>
+                            <ul>
+                                <li>Enter USD amount to trade</li>
+                                <li>System calculates stablecoin volume based on current price</li>
+                                <li>Arbitrage bots automatically trade if price deviates too much</li>
+                                <li>All activity updates fund pools and collateralization status</li>
+                            </ul>
+                        </div>
+                    `;
+                    break;
+            }
+            
+            document.getElementById('guideModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('guideModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside of it
+        window.onclick = function(event) {
+            const modal = document.getElementById('guideModal');
+            if (event.target == modal) {
+                closeModal();
+            }
         }
     </script>
 </body>
