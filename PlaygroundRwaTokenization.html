@@ -776,14 +776,24 @@
 								</div>
 
 								<div class="form-group">
-										<label>Asset Type</label>
-										<select id="assetType">
-												<option value="">Select Asset Type</option>
-												<option value="real-estate">Real Estate</option>
-												<option value="private-equity">Private Equity</option>
-												<option value="commodities">Commodities</option>
-												<option value="art">Art & Collectibles</option>
-										</select>
+										<label>Asset Type and Token Economics</label>
+										<div style="display: flex; flex-direction: column; gap: 10px;">
+												<!-- Asset Type Row -->
+												<select id="assetType">
+														<option value="">Select Asset Type</option>
+														<option value="real-estate">Real Estate</option>
+														<option value="private-equity">Private Equity</option>
+														<option value="commodities">Commodities</option>
+														<option value="art">Art & Collectibles</option>
+												</select>
+												
+												<!-- Token Economics Row -->
+												<select id="tokenEconomics">
+														<option value="">Token Economics</option>
+														<option value="fractional-ownership">Fractional Ownership</option>
+														<option value="yield-distribution">Yield Distribution</option>
+												</select>
+										</div>
 								</div>
 
 								<div class="form-group">
@@ -864,7 +874,7 @@
 										
 										<div class="notification" id="kycQueue">
 												<span class="status-indicator pending"></span>
-												<strong>KYC Queue:</strong><br> 0 pending applications
+												<strong>KYC Queue:<br></strong> 0 pending applications
 										</div>
 
 								<button class="btn" onclick="reviewKYC()">Review KYC Applications</button>
