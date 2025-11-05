@@ -1203,7 +1203,8 @@
             
             // For fiat/commodity-pegged, set USD Reserve Fund Pool = Collateral Total Value
             if (collateralType === 'fiat-pegged' || collateralType === 'commodity-pegged') {
-                document.getElementById('usd-reserve-fiat').textContent = totalCollateralValue.toFixed(2);
+                const usdReserveEl = document.getElementById('usd-reserve');
+                if (usdReserveEl) usdReserveEl.textContent = totalCollateralValue.toFixed(2);
             }
             
             updateCollateralizationStatus();
@@ -1300,7 +1301,9 @@
                 usdReserve = icoAmount + exchangeNetUSD;
             }
             
-            const stablecoinPool = circulatingSupply + exchangeNetStablecoin;
+            // Total stablecoin liability = circulating supply + absolute value of exchange position
+            // (If exchange owes tokens to market, that increases total liability)
+            const stablecoinPool = circulatingSupply + Math.abs(exchangeNetStablecoin);
             const indicator = document.getElementById('collateral-indicator');
             const status = document.getElementById('collateral-status');
             
@@ -1322,7 +1325,8 @@
                 usdReserve = icoAmount + exchangeNetUSD;
             }
             
-            const stablecoinPool = circulatingSupply + exchangeNetStablecoin;
+            // Total stablecoin liability = circulating supply + absolute value of exchange position
+            const stablecoinPool = circulatingSupply + Math.abs(exchangeNetStablecoin);
             
             document.getElementById('usd-pool-display').textContent = usdReserve.toFixed(2);
             document.getElementById('stablecoin-pool-display').textContent = stablecoinPool.toFixed(2);
@@ -1661,7 +1665,8 @@
             document.getElementById('cash-value').value = '';
             document.getElementById('circulation-ratio').value = '';
             document.getElementById('stablecoin-price').value = '1.00';
-            document.getElementById('ico-amount').value = '';
+            const icoInput = document.getElementById('ico-amount-input');
+            if (icoInput) icoInput.value = '';
             const tAmt = document.getElementById('trade-stablecoin-amount');
             const tPrice = document.getElementById('trade-price');
             if (tAmt) tAmt.value = '';
