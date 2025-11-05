@@ -1,0 +1,1846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stablecoin Playground</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+            background: linear-gradient(135deg, #22597e 0%, #361458 100%);
+            min-height: 100vh;
+            padding: 20px;
+            letter-spacing: -0.025em;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 300;
+            color: #ffffff;
+            animation: glow 2s ease-in-out infinite;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+            text-shadow: #3e0b5c 0px 0px 10px, #6454f1 0px 0px 30px, #8f83ff 0px 0px 50px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #1c1c1e;
+            margin-bottom: 30px;
+            font-size: 2rem;
+            font-weight: 700;
+            text-shadow: none;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .column-box {
+            background: linear-gradient(145deg, #ffffff 0%, #f2f2f7 100%);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 
+                0 2px 10px rgba(0, 0, 0, 0.1),
+                0 1px 3px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(209, 209, 214, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .column-box:hover {
+            transform: translateY(-4px);
+            box-shadow: 
+                0 4px 20px rgba(0, 0, 0, 0.15),
+                0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .column-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1c1c1e;
+            margin-bottom: 24px;
+            text-align: center;
+            padding-bottom: 12px;
+            border-bottom: 3px solid transparent;
+            background: linear-gradient(90deg, #007aff, #5ac8fa, #af52de);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+        }
+
+        .column-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, #007aff, #5ac8fa, #af52de);
+            border-radius: 2px;
+        }
+
+        .row-box {
+            background: linear-gradient(135deg, #f2f2f7 0%, #e5e5ea 100%);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .row-box::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(135deg, #007aff, #5ac8fa);
+            border-radius: 6px 0 0 6px;
+        }
+
+        .row-box:hover {
+            background: linear-gradient(135deg, #e5e5ea 0%, #d1d1d6 100%);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            transform: translateY(-1px);
+        }
+
+        .row-title {
+            font-weight: 600;
+            color: #1c1c1e;
+            margin-bottom: 16px;
+            font-size: 1.125rem;
+            letter-spacing: -0.025em;
+        }
+
+        .input-group {
+            margin-bottom: 16px;
+            position: relative;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: #3a3a3c;
+            font-weight: 600;
+            font-size: 0.9rem;
+            letter-spacing: 0.2px;
+            text-transform: capitalize;
+            position: relative;
+        }
+
+        .input-group label::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 30px;
+            height: 2px;
+            background: linear-gradient(90deg, #007aff, #5ac8fa);
+            border-radius: 1px;
+        }
+
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid #e5e5ea;
+            border-radius: 20px;
+            font-size: 15px;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 50%, #e8f4fd 100%);
+            color: #1c1c1e;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 
+                inset 0 2px 4px rgba(0, 0, 0, 0.06),
+                0 1px 3px rgba(0, 0, 0, 0.1);
+            font-family: inherit;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+            position: relative;
+            backdrop-filter: blur(5px);
+        }
+
+        input[type="text"]::placeholder, input[type="number"]::placeholder {
+            color: #8e8e93;
+            font-weight: 400;
+            font-style: italic;
+        }
+
+        input[type="text"]:focus, input[type="number"]:focus {
+            outline: none;
+            border-color: #007aff;
+            background: linear-gradient(135deg, #ffffff 0%, #f0f8ff 50%, #e3f2fd 100%);
+            box-shadow: 
+                inset 0 3px 6px rgba(0, 122, 255, 0.1),
+                0 0 0 4px rgba(0, 122, 255, 0.15),
+                0 4px 12px rgba(0, 122, 255, 0.2);
+            transform: translateY(-2px) scale(1.02);
+            border-width: 3px;
+        }
+
+        input[type="text"]:hover, input[type="number"]:hover {
+            border-color: #c7c7cc;
+            background: linear-gradient(135deg, #ffffff 0%, #f5f8ff 50%, #eaf4ff 100%);
+            box-shadow: 
+                inset 0 2px 4px rgba(0, 0, 0, 0.08),
+                0 2px 8px rgba(0, 0, 0, 0.12);
+            transform: translateY(-1px);
+        }
+
+        .button {
+			background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 700;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            margin: 8px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            box-shadow: 
+                0 4px 15px rgba(0, 122, 255, 0.3),
+                0 2px 4px rgba(0, 0, 0, 0.1);
+            font-family: inherit;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .button:hover::before {
+            left: 100%;
+        }
+
+        .button:hover {
+            background: linear-gradient(135deg, #0051d5 0%, #003c9b 100%);
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 
+                0 8px 25px rgba(0, 122, 255, 0.4),
+                0 4px 10px rgba(0, 0, 0, 0.2);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .button:active {
+            transform: translateY(-1px) scale(1.02);
+            box-shadow: 
+                0 4px 15px rgba(0, 122, 255, 0.3),
+                0 2px 5px rgba(0, 0, 0, 0.15);
+        }
+
+        .button.secondary {
+            background: linear-gradient(135deg, #34c759 0%, #248a3d 100%);
+            box-shadow: 
+                0 4px 15px rgba(52, 199, 89, 0.3),
+                0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .button.secondary:hover {
+            background: linear-gradient(135deg, #248a3d 0%, #1e7e34 100%);
+            box-shadow: 
+                0 8px 25px rgba(52, 199, 89, 0.4),
+                0 4px 10px rgba(0, 0, 0, 0.2);
+            transform: translateY(-3px) scale(1.05);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .button.danger {
+            background: linear-gradient(135deg, #ff3b30 0%, #d70015 100%);
+            box-shadow: 
+                0 4px 15px rgba(255, 59, 48, 0.3),
+                0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .button.danger:hover {
+            background: linear-gradient(135deg, #d70015 0%, #a50010 100%);
+            box-shadow: 
+                0 8px 25px rgba(255, 59, 48, 0.4),
+                0 4px 10px rgba(0, 0, 0, 0.2);
+            transform: translateY(-3px) scale(1.05);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Sharp gradient buttons with 90-degree effect */
+        .button.gradient-sharp {
+            background: linear-gradient(90deg, #ff6b6b 0%, #4ecdc4 50%, #45b7d1 100%);
+            background-size: 200% 100%;
+            animation: gradientShift 3s ease infinite;
+            color: white;
+            font-weight: 600;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .button.gradient-sharp:hover {
+            background: linear-gradient(90deg, #ff5252 0%, #26a69a 50%, #2196f3 100%);
+            background-size: 200% 100%;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Small semi-transparent button style */
+        .button.small {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            color: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 500;
+            text-transform: none;
+            border-radius: 18px;
+            margin: 4px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .button.small:hover {
+            background: rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-1px) scale(1.01);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .button.small.secondary {
+            background: rgba(199, 52, 52, 0.15);
+            color: rgb(216, 174, 154);
+            border-color: rgba(199, 86, 52, 0.3);
+        }
+
+        .button.small.secondary:hover {
+            background: rgba(52, 199, 89, 0.25);
+            border-color: rgba(52, 199, 89, 0.4);
+        }
+
+        .display-box {
+            background: linear-gradient(135deg, #ffffff 0%, #f9f9f9 100%);
+            border: 1px solid #d1d1d6;
+            border-radius: 10px;
+            padding: 16px;
+            margin: 12px 0;
+            font-family: 'SF Mono', 'Monaco', 'Menlo', 'Courier New', monospace;
+            font-size: 14px;
+            color: #1c1c1e;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .console {
+            background: linear-gradient(135deg, #1c1c1e 0%, #000000 100%);
+            color: #f2f2f7;
+            border-radius: 10px;
+            padding: 16px;
+            height: 150px;
+            overflow-y: auto;
+            font-family: 'SF Mono', 'Monaco', 'Menlo', 'Courier New', monospace;
+            font-size: 12px;
+            margin: 12px 0;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .console-entry {
+            margin: 2px 0;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+
+        .console-entry.buy {
+            background: rgba(255, 59, 48, 0.2);
+            color: #ff9f92;
+        }
+
+        .console-entry.sell {
+            background: rgba(52, 199, 89, 0.2);
+            color: #98d982;
+        }
+
+        .console-entry.arb-buy {
+            background: rgba(255, 59, 48, 0.1);
+            color: #ffb3ab;
+        }
+
+        .console-entry.arb-sell {
+            background: rgba(52, 199, 89, 0.1);
+            color: #b3e5a1;
+        }
+
+        .indicator-light {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+        }
+
+        .indicator-light.red {
+            background: linear-gradient(135deg, #ff3b30 0%, #d70015 100%);
+            box-shadow: 0 0 20px rgba(255, 59, 48, 0.6);
+        }
+
+        .indicator-light.green {
+            background: linear-gradient(135deg, #34c759 0%, #248a3d 100%);
+            box-shadow: 0 0 20px rgba(52, 199, 89, 0.6);
+        }
+
+        .status-text {
+            display: inline-block;
+            font-weight: 500;
+            vertical-align: top;
+            margin-top: 2px;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        .comparison-item {
+            background: linear-gradient(135deg, #ffffff 0%, #f2f2f7 100%);
+            padding: 16px;
+            border-radius: 10px;
+            text-align: center;
+            border: 2px solid #7474b6;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .comparison-item:hover {
+            border-color: #6565cc;
+            box-shadow: 0 2px 8px rgba(0, 122, 255, 0.2);
+            transform: translateY(-1px);
+        }
+
+        /* Specific corner styling for each comparison item */
+        .comparison-item.top-left {
+            border-top-left-radius:50px;
+            border-top-right-radius: 10px;
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+        }
+
+        .comparison-item.top-right {
+            border-top-left-radius: 10px;
+            border-top-right-radius: 50px;
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+        }
+
+        .comparison-item.bottom-left {
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            border-bottom-left-radius: 50px;
+            border-bottom-right-radius: 10px;
+        }
+
+        .comparison-item.bottom-right {
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 50px;
+        }
+
+        .comparison-item.half-left {
+            border-top-left-radius:50px;
+            border-top-right-radius: 5px;
+            border-bottom-left-radius: 50px;
+            border-bottom-right-radius: 5px;
+        }
+
+        .comparison-item.half-right {
+            border-top-left-radius: 5px;
+            border-top-right-radius: 50px;
+            border-bottom-left-radius: 5px;
+            border-bottom-right-radius: 50px;
+        }
+
+        .comparison-label {
+            font-size: 0.75rem;
+            color: #8e8e93;
+            margin-bottom: 8px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .comparison-value {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: #1c1c1e;
+            letter-spacing: -0.025em;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+        }
+
+        .footer a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 10px 20px;
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .footer a:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }        
+
+        @media (max-width: 1200px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 1.75rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .column-box {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+
+            .header h1 {
+                font-size: 1.3rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.5rem;
+                line-height: 1.2;
+            }
+        }
+
+        .checkmark {
+            color: #34c759;
+            font-weight: 700;
+            margin-left: 8px;
+            text-shadow: 0 0 4px rgba(52, 199, 89, 0.5);
+        }
+        /* Home Button Styles */
+        .home-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: rgba(0, 200, 255, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            font-size: 24px;
+            box-shadow: 
+                0 4px 20px rgba(0, 200, 255, 0.3),
+                0 2px 10px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(15px);
+        }
+
+        .home-button:hover {
+            transform: translateY(-3px) scale(1.1);
+            box-shadow: 
+                0 8px 30px rgba(0, 200, 255, 0.5),
+                0 4px 20px rgba(0, 0, 0, 0.3);
+            background: rgba(0, 212, 255, 0.5);
+            color: white;
+            text-decoration: none;
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .home-button:active {
+            transform: translateY(-1px) scale(1.05);
+        }
+
+        @keyframes homeButtonPulse {
+            0%, 100% {
+                box-shadow: 
+                    0 4px 20px rgba(0, 200, 255, 0.3),
+                    0 2px 10px rgba(0, 0, 0, 0.2);
+            }
+            50% {
+                box-shadow: 
+                    0 6px 25px rgba(0, 200, 255, 0.5),
+                    0 3px 15px rgba(0, 0, 0, 0.3);
+            }
+        }
+
+        .home-button {
+            animation: homeButtonPulse 3s ease-in-out infinite;
+        }        
+
+        .btn.guide {
+            background: rgba(255, 255, 255, 0.08);
+            color: #888;
+            border: 2px solid rgba(0, 0, 0, 0.08);
+            font-size: 0.8rem;
+            padding: 0.4rem 0.8rem;
+            margin-left: auto;
+            display: block;
+            margin-bottom: 0.75rem;
+            text-align: right;
+            width: fit-content;
+            align-self: flex-end;
+            font-weight: 400;
+            opacity: 0.8;
+            cursor: pointer;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .btn.guide:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: #555;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            opacity: 1;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            color: #ffffff;
+        }
+
+        .modal-header {
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin: 0;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .close:hover {
+            color: #ffffff;
+        }
+
+        .modal-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            border-left: 4px solid #3498db;
+        }
+
+        .modal-section h3 {
+            color: #3498db;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .modal-section p {
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .modal-section ul {
+            padding-left: 20px;
+            line-height: 1.6;
+        }
+
+        .modal-section li {
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+      <div class="header">
+        <h1>Stablecoin Liquidity Playground</h1>
+        <div style="text-align: center; margin-top: 15px; display: flex; gap: 15px; justify-content: center; max-width: 600px; margin: 15px auto 0;">
+            <button class="button small" onclick="loadSampleData()" style="flex: 1;">Load Sample Data</button>
+            <button class="button small secondary" onclick="clearAllData()" style="flex: 1;">Clear All Data</button>
+        </div>
+        <div style="text-align: center; margin-top: 10px;">
+            <button class="button small" onclick="showGuideModal()" style="background: rgba(52, 152, 219, 0.2); color: rgba(52, 152, 219, 1); border: 1px solid rgba(52, 152, 219, 0.3);">📖 Guide Tour</button>
+        </div>
+      </div>
+          
+        <div class="main-grid">
+            <!-- Stablecoin Issuance Column -->
+            <div class="column-box">
+                <div class="column-title">Stablecoin Issuance</div>
+                <button class="btn guide" onclick="showColumnGuide('issuance')">ℹ️ Guide</button>
+                
+                <!-- Stablecoin Contract Constructor Row -->
+                <div class="row-box">
+                    <div class="row-title">Stablecoin Contract Constructor</div>
+                    <div class="input-group">
+                        <label>Stablecoin Name:</label>
+                        <input type="text" id="stablecoin-name" placeholder="Enter stablecoin name">
+                    </div>
+                    <div class="button-group">
+                        <button class="button gradient-sharp" onclick="generateContract()">Constructor</button>
+                    </div>
+                    <div class="display-box" id="contract-address">Smart contract address will appear here</div>
+                </div>
+                
+                <!-- Collateral Basket Row -->
+                <div class="row-box">
+                    <div class="row-title">Collateral Proof</div>
+                    <div class="input-group">
+                        <label>Collateral Type:</label>
+                        <select id="collateral-type" onchange="updateCollateralType()" style="width: 100%; padding: 16px 20px; border: 2px solid #e5e5ea; border-radius: 20px; font-size: 15px; background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 50%, #e8f4fd 100%); color: #1c1c1e; font-family: inherit; font-weight: 500;">
+                            <option value="asset-backed">Asset-Backed</option>
+                            <option value="fiat-pegged">Fiat-Pegged</option>
+                            <option value="commodity-pegged">Commodity-Pegged</option>
+                            <option value="crypto-backed" disabled>Crypto-Backed</option>
+                            <option value="algorithmic" disabled>Algorithmic</option>
+                        </select>
+                    </div>
+                    <div id="asset-backed-inputs">
+                        <div class="input-group">
+                            <label>Asset Credential Proof:</label>
+                            <input type="text" id="nft-address-1" placeholder="0x...">
+                        </div>
+                        <div class="input-group">
+                            <label>Valuation/Transaction Proof:</label>
+                            <input type="text" id="nft-address-2" placeholder="0x...">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label>Cash Value (USD):</label>
+                        <input type="number" id="cash-value" placeholder="0.00" step="0.01">
+                    </div>
+                    <div class="button-group" id="asset-backed-buttons">
+                        <button class="button gradient-sharp" onclick="revaluation()">Valuation</button>
+                        <button class="button secondary" onclick="auctionIn()">Auction In</button>
+                        <button class="button danger" onclick="auctionOut()">Auction Out</button>
+                    </div>
+                    <div class="button-group" id="fiat-commodity-buttons" style="display: none;">
+                        <button class="button" onclick="depositReserve()">Deposit Collateral</button>
+                        <button class="button danger" onclick="withdrawReserve()">Withdraw Collateral</button>
+                    </div>
+                    <div class="console" id="collateral-console"></div>
+                    <!-- div class="display-box">
+                        Total Collateral Value: <br>
+                        $<span id="total-collateral">0.00</span>
+                    </div -->
+                    <div class="comparison-grid">
+                        <div class="comparison-item half-left">
+                            <div class="comparison-label">Collateral<br>Total Value</div>
+                            <div class="comparison-value">$<span id="total-collateral">0.00</span></div>
+                        </div>
+                        <div class="comparison-item half-right">
+                            <div class="comparison-label">Stablecoin<br>SUPPLY LIMIT</div>
+                            <div class="comparison-value"><span id="stablecoin-total-supply">0.000000</span></div>
+                        </div>
+                    </div>
+
+                </div>
+                
+                <!-- ICO and Reserve Row -->
+                <div class="row-box">
+                    <!-- ICO Fundraising Section (Asset-Backed Only) -->
+                    <div id="ico-section">
+                        <div class="row-title">ICO Fundraising (Innovative)</div>
+                        <div class="input-group">
+                            <label>Token Sales in USD Value:</label>
+                            <input type="number" id="ico-amount-input" placeholder="$0.00" step="0.01">
+                        </div>
+                        <div class="button-group">
+                            <button class="button gradient-sharp" onclick="launchICO()">ICO Launch</button>
+                        </div>
+                        <br>
+                    </div>
+                    
+                    <!-- Reserve Funding Section (All Types) -->
+                    <div id="reserve-section">
+                        <div class="row-title">Reserve Funding</div>
+                        <div class="input-group">
+                            <label>Deposit / Withdraw in USD Value:</label>
+                            <input type="number" id="reserve-amount" placeholder="$0.00" step="0.01">
+                        </div>
+                        <div class="button-group">
+                            <button class="button secondary" onclick="depositUSD()">Deposit</button>
+                            <button class="button danger" onclick="withdrawUSD()">Withdraw</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Combined USD Reserve Fund Pool Display -->
+                    <div class="display-box">
+                        USD Reserve Fund Pool: <br>
+                        $<span id="usd-reserve">0.00</span>
+                    </div>
+                    
+                    <div style="margin-top: 15px; margin-left: 15px;">
+                        <span class="indicator-light red" id="collateral-indicator"></span>
+                        <span class="status-text" id="collateral-status">Under-collateralized</span>
+                    </div>
+                </div>
+
+                <!-- Stablecoin Mint-Burn Row -->
+                <div class="row-box">
+                    <div class="row-title">Stablecoin Mint-Burn</div>
+                    <div class="input-group">
+                        <label>Market Price (USD per Stablecoin):</label>
+                        <input type="number" id="stablecoin-price" value="1.00" step="0.01" placeholder="1.00" oninput="calculateStablecoinSupply()">
+                        <small>This is the live market price used for arbitrage checks. Set below 0.98 or above 1.02 to trigger arbitrage with a trade.</small>
+                    </div>
+                    <div class="input-group">
+                        <label>Maximum Token Supply (Auto-Calculated):</label>
+                        <input type="number" id="max-token-supply" readonly placeholder="Auto-calculated based on formula" style="background-color: #f5f5f5;">
+                        <small><strong>Formula:</strong> Max Tokens = Collateral Value ÷ Token Price</small>
+                        <div id="stablecoinCalculationDisplay" style="margin-top: 8px; padding: 10px; background-color: #e3f2fd; border-radius: 4px; font-size: 0.9em; display: none;">
+                            <strong>📊 Calculation:</strong> <span id="stablecoinCalculationFormula"></span>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label>Circulation Ratio (0-1):</label>
+                        <input type="number" id="circulation-ratio" placeholder="0.5" step="0.01" max="1" min="0" oninput="calculateStablecoinSupply()">
+                        <small>Percentage of maximum supply to actually mint</small>
+                    </div>
+                    <div class="button-group">
+                        <button class="button gradient-sharp" onclick="mintBurn()">Mint-Burn</button>
+                    </div>
+                    <div class="display-box">
+                        Stablecoin Circulating Supply: <br>
+                        <span id="circulating-supply">0.000000</span>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <!-- Fund Pool Column -->
+            <div class="column-box">
+                <div class="column-title">Fund Pool</div>
+                <button class="btn guide" onclick="showColumnGuide('fundpool')">ℹ️ Guide</button>
+                
+                <!-- Fund Pool Row -->
+                <div class="row-box">
+                    <div class="row-title">Fund Pool Comparison</div>
+                    <div class="comparison-grid">
+                        <div class="comparison-item top-left">
+                            <div class="comparison-label">USD Reserve Fund Pool</div>
+                            <div class="comparison-value">$<span id="usd-pool-display">0.00</span></div>
+                        </div>
+                        <div class="comparison-item top-right">
+                            <div class="comparison-label">Stablecoin Fund Pool</div>
+                            <div class="comparison-value"><span id="stablecoin-pool-display">0.000000</span></div>
+                        </div>
+                    </div>
+                    <div class="comparison-grid">
+                        <div class="comparison-item bottom-left">
+                            <div class="comparison-label">USD Pool %</div>
+                            <div class="comparison-value"><span id="usd-pool-percent">0</span>%</div>
+                        </div>
+                        <div class="comparison-item bottom-right">
+                            <div class="comparison-label">Stablecoin Pool %</div>
+                            <div class="comparison-value"><span id="stablecoin-pool-percent">0</span>%</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Stablecoin Arbitrary Level Row -->
+                <div class="row-box">
+                    <div class="row-title">Stablecoin Arbitrage Price Band</div>
+                    <div class="input-group">
+                        <label>Lower Bound in USD value:</label>
+                        <input type="number" id="lower-bound" value="0.98" step="0.01" onchange="updateArbitrageBounds()">
+                    </div>
+                    <div class="input-group">
+                        <label>Upper Bound in USD value:</label>
+                        <input type="number" id="upper-bound" value="1.02" step="0.01" onchange="updateArbitrageBounds()">
+                    </div>
+                </div>
+                
+                <!-- Liquidity Pool Row -->
+                <div class="row-box">
+                    <div class="row-title">Liquidity Pool</div>
+                    <div class="display-box">
+                        Exchange Swapper USD Net: <br>
+                        $<span id="exchange-net-usd">0.00</span>
+                    </div>
+                    <div class="display-box">
+                        Exchange Swapper Stablecoin Net: <br>
+                        <span id="exchange-net-stablecoin">0.000000</span>
+                    </div>
+                    <div class="display-box">
+                        Suggested Liquidity <br>
+                        USD / Stablecoin pair: <br>
+                        $<span id="suggested-usd">0.00</span> / <span id="suggested-stablecoin">0.000000</span>
+                    </div>
+                    <button class="button small" style="align-items: center;" onclick="clearLiquidityPool()">🚫 Clear Swapper ⚠</button>
+                </div>
+            </div>
+            
+            <!-- Primary Exchange Market Column -->
+            <div class="column-box">
+                <div class="column-title">Stablecoin Exchange</div>
+                <button class="btn guide" onclick="showColumnGuide('exchange')">ℹ️ Guide</button>
+
+                <!-- Stablecoin Buy and Sell Row -->
+                <div class="row-box">
+                    <div class="row-title">Stablecoin Buy and Sell</div>
+                    <div class="input-group">
+                        <label>Stablecoin Amount to Trade:</label>
+                        <input type="number" id="trade-stablecoin-amount" placeholder="0.000000" step="0.000001" min="0">
+                        <small>Enter number of stablecoins to buy/sell</small>
+                    </div>
+                    <div class="input-group">
+                        <label>Market Price to Trade (USD per token):</label>
+                        <input type="number" id="trade-price" placeholder="1.00" step="0.01" min="0">
+                        <small>If left blank, the system uses the Market Price field above.</small>
+                    </div>
+                    <div class="button-group">
+                        <button class="button" onclick="buyStablecoin()">Buy Stablecoins</button>
+                        <button class="button danger" onclick="sellStablecoin()">Sell Stablecoins</button>
+                    </div>
+                </div>
+                
+                <!-- Order Book Console Row -->
+                <div class="row-box">
+                    <div class="row-title">Regular Order Book</div>
+                    <div class="console" id="orderbook-console"></div>
+                </div>
+                
+                <!-- Short-Term Arbitrary Console Row -->
+                <div class="row-box">
+                    <div class="row-title">Short-Term Arbitrage Order Book</div>
+                    <div class="console" id="arbitrage-console"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <a href="http://www.realmatter.io" target="_blank">Contact us: Real Matter Technology Limited</a>
+    </div>
+
+    <!-- Home Button -->
+    <a href="https://realmatterio.github.io/web3" target="_blank" class="home-button" title="Go to Home Page">
+        🏠
+    </a>
+
+    <!-- Modal for Guide Tour -->
+    <div id="guideModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <h2 class="modal-title" id="modalTitle">Stablecoin Playground Guide</h2>
+            </div>
+            <div id="modalBody">
+                <!-- Modal content will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let collateralBasket = [];
+        let totalCollateralValue = 0;
+        let totalSupply = 0;
+        let circulatingSupply = 0;
+        let icoAmount = 0;
+        let exchangeNetUSD = 0;
+    let exchangeNetStablecoin = 0;
+    // Arbitrage state trackers to prevent repeated executions without a state change
+    let lastArbState = 'within'; // 'within' | 'below' | 'above'
+    let lastArbExecutedState = null; // remembers last executed state to avoid duplicate orders
+        let orderCounter = 1;
+        let arbOrderCounter = 1;
+        let collateralType = 'asset-backed';
+        
+        // Initialize page based on URL parameters
+        // query URL parameters = ?collateral-type=asset-backed|fiat-pegged|commodity-pegged
+        function initializePage() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const collateralParam = urlParams.get('collateral-type');
+            
+            if (collateralParam && ['asset-backed', 'fiat-pegged', 'commodity-pegged'].includes(collateralParam)) {
+                collateralType = collateralParam;
+                document.getElementById('collateral-type').value = collateralParam;
+                updateCollateralType();
+            }
+        }
+        
+        // Update collateral type interface
+        function updateCollateralType() {
+            collateralType = document.getElementById('collateral-type').value;
+            const assetBackedInputs = document.getElementById('asset-backed-inputs');
+            const assetBackedButtons = document.getElementById('asset-backed-buttons');
+            const fiatCommodityButtons = document.getElementById('fiat-commodity-buttons');
+            const icoSection = document.getElementById('ico-section');
+            const circulationRatio = document.getElementById('circulation-ratio');
+            
+            if (collateralType === 'fiat-pegged' || collateralType === 'commodity-pegged') {
+                assetBackedInputs.style.display = 'none';
+                assetBackedButtons.style.display = 'none';
+                fiatCommodityButtons.style.display = 'flex';
+                icoSection.style.display = 'none'; // Hide ICO section for fiat/commodity
+                circulationRatio.value = '0.99';
+                
+                // Clear asset-backed specific fields
+                document.getElementById('nft-address-1').value = '';
+                document.getElementById('nft-address-2').value = '';
+            } else {
+                assetBackedInputs.style.display = 'block';
+                assetBackedButtons.style.display = 'flex';
+                fiatCommodityButtons.style.display = 'none';
+                icoSection.style.display = 'block'; // Show ICO section for asset-backed
+                circulationRatio.value = '0.5';
+            }
+            
+            updateCollateralDisplay();
+        }
+        
+        // Deposit Reserve function for fiat/commodity-pegged
+        function depositReserve() {
+            const value = parseFloat(document.getElementById('cash-value').value);
+            if (!value) {
+                alert('Please enter a USD value');
+                return;
+            }
+            
+            if (collateralType === 'fiat-pegged' || collateralType === 'commodity-pegged') {
+                collateralBasket.push({
+                    type: collateralType,
+                    value: value,
+                    timestamp: new Date().toLocaleTimeString()
+                });
+                updateCollateralDisplay();
+                document.getElementById('cash-value').value = '';
+            }
+        }
+        
+        // Withdraw Reserve function for fiat/commodity-pegged
+        function withdrawReserve() {
+            if ((collateralType === 'fiat-pegged' || collateralType === 'commodity-pegged') && collateralBasket.length > 0) {
+                collateralBasket.pop();
+                updateCollateralDisplay();
+            }
+        }
+        
+        // Generate smart contract address
+        function generateContract() {
+            const name = document.getElementById('stablecoin-name').value;
+            if (!name) {
+                alert('Please enter a stablecoin name');
+                return;
+            }
+            
+            const address = '0x' + 
+                Math.random().toString(16).substr(2, 4) + 
+                '....' + 
+                Math.random().toString(16).substr(2, 4);
+            const symbol = name.substring(0, 3).toUpperCase();
+            document.getElementById('contract-address').innerHTML = 
+                `${name} Symbol: ${symbol}<br>` +
+                `Contract: ${address} deployed to Ethereum<br>` +
+                `Access Control: Admin, Minter, Pauser`;
+        }
+        
+        // Collateral basket functions
+        function auctionIn() {
+            if (collateralType === 'asset-backed') {
+                const addr1 = document.getElementById('nft-address-1').value;
+                const addr2 = document.getElementById('nft-address-2').value;
+                const value = parseFloat(document.getElementById('cash-value').value);
+                
+                if (!addr1 || !addr2 || !value) {
+                    alert('Please fill all fields');
+                    return;
+                }
+                
+                collateralBasket.push({type: 'asset-backed', addr1, addr2, value});
+                updateCollateralDisplay();
+                clearCollateralInputs();
+            }
+        }
+        
+        function auctionOut() {
+            if (collateralBasket.length > 0) {
+                collateralBasket.pop();
+                updateCollateralDisplay();
+            }
+        }
+        
+        function revaluation() {
+            if (collateralType !== 'asset-backed') {
+                alert('Revaluation is only available for asset-backed collateral');
+                return;
+            }
+            
+            const value = parseFloat(document.getElementById('cash-value').value);
+            if (!value || collateralBasket.length === 0) {
+                alert('Please enter a value and ensure collateral exists');
+                return;
+            }
+            
+            collateralBasket[collateralBasket.length - 1].value = value;
+            updateCollateralDisplay();
+        }
+        
+        function updateCollateralDisplay() {
+            const console = document.getElementById('collateral-console');
+            console.innerHTML = '';
+            totalCollateralValue = 0;
+            
+            collateralBasket.forEach((item, index) => {
+                const entry = document.createElement('div');
+                if (item.type === 'fiat-pegged' || item.type === 'commodity-pegged') {
+                    entry.textContent = `${index + 1}. Fiat/Commodity Reserve | ${item.timestamp} | $${item.value.toFixed(2)}`;
+                } else {
+                    entry.textContent = `${index + 1}. ${item.addr1} | ${item.addr2} | $${item.value.toFixed(2)}`;
+                }
+                console.appendChild(entry);
+                totalCollateralValue += item.value;
+            });
+            
+            document.getElementById('total-collateral').textContent = totalCollateralValue.toFixed(2);
+            
+            // Auto-calculate stablecoin supply when collateral changes
+            calculateStablecoinSupply();
+            
+            // For fiat/commodity-pegged, set USD Reserve Fund Pool = Collateral Total Value
+            if (collateralType === 'fiat-pegged' || collateralType === 'commodity-pegged') {
+                document.getElementById('usd-reserve-fiat').textContent = totalCollateralValue.toFixed(2);
+            }
+            
+            updateCollateralizationStatus();
+            updateFundPools();
+        }
+        
+        function clearCollateralInputs() {
+            document.getElementById('nft-address-1').value = '';
+            document.getElementById('nft-address-2').value = '';
+            document.getElementById('cash-value').value = '';
+        }
+        
+        // Mint-Burn function
+        function mintBurn() {
+            const ciratio = parseFloat(document.getElementById('circulation-ratio').value);
+            if (!ciratio) {
+                alert('Please enter circulation ratio');
+                return;
+            }
+            
+            const maxSupply = parseFloat(document.getElementById('max-token-supply').value) || 0;
+            totalSupply = maxSupply * ciratio;
+            circulatingSupply = totalSupply; // Assuming all minted stablecoins are in circulation
+            document.getElementById('circulating-supply').textContent = circulatingSupply.toFixed(6);
+            updateFundPools();
+            updateCollateralizationStatus();
+        }
+        
+        // Calculate maximum stablecoin supply automatically based on collateral and token price
+        function calculateStablecoinSupply() {
+            const collateralValue = totalCollateralValue || 0;
+            const tokenPrice = parseFloat(document.getElementById('stablecoin-price').value) || 1.00;
+            const maxSupplyInput = document.getElementById('max-token-supply');
+            const calculationDisplay = document.getElementById('stablecoinCalculationDisplay');
+            const calculationFormula = document.getElementById('stablecoinCalculationFormula');
+            
+            if (collateralValue > 0 && tokenPrice > 0) {
+                const maxSupply = Math.floor(collateralValue / tokenPrice);
+                maxSupplyInput.value = maxSupply;
+                
+                // Show calculation breakdown
+                calculationDisplay.style.display = 'block';
+                calculationFormula.innerHTML = `$${collateralValue.toLocaleString()} ÷ $${tokenPrice.toFixed(2)} = ${maxSupply.toLocaleString()} tokens`;
+                
+                // Update stablecoin total supply limit display
+                document.getElementById('stablecoin-total-supply').textContent = maxSupply.toFixed(6);
+            } else {
+                maxSupplyInput.value = '';
+                calculationDisplay.style.display = 'none';
+                document.getElementById('stablecoin-total-supply').textContent = '0.000000';
+            }
+            
+            updateCollateralizationStatus();
+        }
+        
+        // Update reserve fund
+        function updateReserve() {
+            if (collateralType === 'asset-backed') {
+                const usdReserve = icoAmount + exchangeNetUSD;
+                document.getElementById('usd-reserve').textContent = usdReserve.toFixed(2);
+            } else {
+                // For fiat/commodity-pegged, USD Reserve = Collateral Total Value
+                document.getElementById('usd-reserve').textContent = totalCollateralValue.toFixed(2);
+            }
+            updateCollateralizationStatus();
+            updateFundPools();
+        }
+        
+        // Add "ICO Launch" button functionality
+        function launchICO() {
+            icoAmount = parseFloat(document.getElementById('ico-amount-input').value) || 0;
+            updateReserve();
+            updateCollateralizationStatus();
+            alert(`ICO Launched for $${icoAmount.toFixed(2)}`);
+        }
+        
+        // Add "Clear" button functionality for Liquidity Pool
+        function clearLiquidityPool() {
+            exchangeNetUSD = 0;
+            exchangeNetStablecoin = 0;
+            document.getElementById('exchange-net-usd').textContent = exchangeNetUSD.toFixed(2);
+            document.getElementById('exchange-net-stablecoin').textContent = exchangeNetStablecoin.toFixed(2);
+            updateCollateralizationStatus();
+            updateFundPools();
+            alert('Liquidity Pool Cleared!');
+        }
+        
+        // Update collateralization status
+        function updateCollateralizationStatus() {
+            let usdReserve;
+            if (collateralType === 'fiat-pegged' || collateralType === 'commodity-pegged') {
+                usdReserve = totalCollateralValue;
+            } else {
+                usdReserve = icoAmount + exchangeNetUSD;
+            }
+            
+            const stablecoinPool = circulatingSupply + exchangeNetStablecoin;
+            const indicator = document.getElementById('collateral-indicator');
+            const status = document.getElementById('collateral-status');
+            
+            if (usdReserve >= stablecoinPool) {
+                indicator.className = 'indicator-light green';
+                status.textContent = 'Over-collateralized';
+            } else {
+                indicator.className = 'indicator-light red';
+                status.textContent = 'Under-collateralized';
+            }
+        }
+        
+        // Update fund pools
+        function updateFundPools() {
+            let usdReserve;
+            if (collateralType === 'fiat-pegged' || collateralType === 'commodity-pegged') {
+                usdReserve = totalCollateralValue;
+            } else {
+                usdReserve = icoAmount + exchangeNetUSD;
+            }
+            
+            const stablecoinPool = circulatingSupply + exchangeNetStablecoin;
+            
+            document.getElementById('usd-pool-display').textContent = usdReserve.toFixed(2);
+            document.getElementById('stablecoin-pool-display').textContent = stablecoinPool.toFixed(2);
+            
+            const total = usdReserve + stablecoinPool;
+            const usdPercent = total > 0 ? (usdReserve / total * 100) : 0;
+            const stablecoinPercent = total > 0 ? (stablecoinPool / total * 100) : 0;
+            
+            document.getElementById('usd-pool-percent').textContent = usdPercent.toFixed(1);
+            document.getElementById('stablecoin-pool-percent').textContent = stablecoinPercent.toFixed(1);
+            
+            // Update exchange net values
+            document.getElementById('exchange-net-usd').textContent = exchangeNetUSD.toFixed(2);
+            document.getElementById('exchange-net-stablecoin').textContent = exchangeNetStablecoin.toFixed(2);
+            
+            // Update suggested liquidity
+            document.getElementById('suggested-usd').textContent = (usdReserve * 0.3).toFixed(2);
+            document.getElementById('suggested-stablecoin').textContent = (stablecoinPool * 0.3).toFixed(2);
+        }
+        
+        // Trading functions
+    function buyStablecoin() {
+            const tokens = parseFloat(document.getElementById('trade-stablecoin-amount').value);
+            let tradePrice = parseFloat(document.getElementById('trade-price').value);
+            if (!tokens || tokens <= 0) {
+                alert('Please enter a valid stablecoin amount');
+                return;
+            }
+            if (!tradePrice || tradePrice <= 0) {
+                tradePrice = parseFloat(document.getElementById('stablecoin-price').value) || 1.00;
+            }
+            const amount = tokens * tradePrice;
+
+            addOrderToBook('buy', amount, tokens);
+            exchangeNetUSD += amount;
+            exchangeNetStablecoin -= tokens;
+            updateReserve();
+            updateCollateralizationStatus();
+            // Check arbitrage based on trade price (execute)
+            checkArbitrage(tradePrice, true);
+
+            document.getElementById('trade-stablecoin-amount').value = '';
+            document.getElementById('trade-price').value = '';
+        }
+        
+    function sellStablecoin() {
+            const tokens = parseFloat(document.getElementById('trade-stablecoin-amount').value);
+            let tradePrice = parseFloat(document.getElementById('trade-price').value);
+            if (!tokens || tokens <= 0) {
+                alert('Please enter a valid stablecoin amount');
+                return;
+            }
+            if (!tradePrice || tradePrice <= 0) {
+                tradePrice = parseFloat(document.getElementById('stablecoin-price').value) || 1.00;
+            }
+            const amount = tokens * tradePrice;
+
+            addOrderToBook('sell', amount, tokens);
+            exchangeNetUSD -= amount;
+            exchangeNetStablecoin += tokens;
+            updateReserve();
+            updateCollateralizationStatus();
+            // Check arbitrage based on trade price (execute)
+            checkArbitrage(tradePrice, true);
+
+            document.getElementById('trade-stablecoin-amount').value = '';
+            document.getElementById('trade-price').value = '';
+        }
+        
+        function addOrderToBook(type, amount, volume) {
+            const console = document.getElementById('orderbook-console');
+            const entry = document.createElement('div');
+            entry.className = `console-entry ${type}`;
+            entry.innerHTML = `#${orderCounter++} VOL: ${volume.toFixed(4)} | ${type.toUpperCase()}: $${amount.toFixed(2)} @ $${(amount/volume).toFixed(4)}/token`;
+            console.appendChild(entry);
+            console.scrollTop = console.scrollHeight;
+            
+            // Add checkmark after 1 second
+            setTimeout(() => {
+                entry.innerHTML += '<span class="checkmark">✓</span>';
+            }, 1000);
+        }
+        
+        function checkArbitrage(currentPrice, execute = false) {
+            const lowerBound = parseFloat(document.getElementById('lower-bound').value);
+            const upperBound = parseFloat(document.getElementById('upper-bound').value);
+            const eps = 1e-9; // small tolerance for float comparisons
+            const arbConsole = document.getElementById('arbitrage-console');
+            const statusId = 'arb-status-note';
+            const upsertStatus = (text) => {
+                if (!arbConsole) return;
+                let el = document.getElementById(statusId);
+                if (!el) {
+                    el = document.createElement('div');
+                    el.id = statusId;
+                    el.className = 'console-entry';
+                    arbConsole.appendChild(el);
+                }
+                el.textContent = text;
+                arbConsole.scrollTop = arbConsole.scrollHeight;
+            };
+            const clearStatus = () => {
+                const el = document.getElementById(statusId);
+                if (el && el.parentNode) el.parentNode.removeChild(el);
+            };
+
+            // Determine current arbitrage state
+            let state = 'within';
+            if (currentPrice < lowerBound - eps) state = 'below';
+            else if (currentPrice > upperBound + eps) state = 'above';
+
+            // Reset executed state whenever band state changes
+            if (state !== lastArbState) {
+                lastArbExecutedState = null;
+                lastArbState = state;
+            }
+
+            // If price is below the lower band: arbitrage BUY (buy undervalued stablecoin)
+            if (state === 'below') {
+                const arbPrice = lowerBound;   // execute at band edge for simplicity
+                const volume = 1;              // 1 token notionally
+                const amount = arbPrice * volume;
+                if (execute) {
+                    // prevent duplicate execution for same state until price/bounds change
+                    if (lastArbExecutedState === state) {
+                        upsertStatus(`Arbitrage already executed for current condition (below band). Adjust price or bounds to trigger again.`);
+                        return;
+                    }
+                    clearStatus();
+                    addArbitrageOrder('buy', amount, volume);
+                    // Exchange receives USD, gives out stablecoin
+                    exchangeNetUSD += amount;
+                    exchangeNetStablecoin -= volume;
+                    updateFundPools();
+                    updateCollateralizationStatus();
+                    lastArbExecutedState = state;
+                } else {
+                    upsertStatus(`Arbitrage condition detected: price ${currentPrice.toFixed(2)} < ${lowerBound.toFixed(2)}. Would BUY 1.0000 @ ${arbPrice.toFixed(2)}.`);
+                }
+                return;
+            }
+
+            // If price is above the upper band: arbitrage SELL (mint/sell to bring price down)
+            if (state === 'above') {
+                const arbPrice = upperBound;   // execute at band edge for simplicity
+                const volume = 1;              // 1 token notionally
+                const amount = arbPrice * volume;
+                if (execute) {
+                    // prevent duplicate execution for same state until price/bounds change
+                    if (lastArbExecutedState === state) {
+                        upsertStatus(`Arbitrage already executed for current condition (above band). Adjust price or bounds to trigger again.`);
+                        return;
+                    }
+                    clearStatus();
+                    addArbitrageOrder('sell', amount, volume);
+                    // Exchange pays out USD, receives stablecoin
+                    exchangeNetUSD -= amount;
+                    exchangeNetStablecoin += volume;
+                    updateFundPools();
+                    updateCollateralizationStatus();
+                    lastArbExecutedState = state;
+                } else {
+                    upsertStatus(`Arbitrage condition detected: price ${currentPrice.toFixed(2)} > ${upperBound.toFixed(2)}. Would SELL 1.0000 @ ${arbPrice.toFixed(2)}.`);
+                }
+                return;
+            }
+
+            // Within band: show a single status line (preview only)
+            upsertStatus(`Within band (${lowerBound.toFixed(2)}–${upperBound.toFixed(2)}). No arbitrage.`);
+        }
+        
+        function addArbitrageOrder(type, amount, volume) {
+            const console = document.getElementById('arbitrage-console');
+            const entry = document.createElement('div');
+            entry.className = `console-entry arb-${type}`;
+            entry.innerHTML = `#${arbOrderCounter++} VOL: ${volume.toFixed(4)} | ${type.toUpperCase()}: $${amount.toFixed(2)} @ $${(amount/volume).toFixed(4)}/token`;
+            console.appendChild(entry);
+            console.scrollTop = console.scrollHeight;
+            
+            // Add checkmark after 1 second
+            setTimeout(() => {
+                entry.innerHTML += '<span class="checkmark">✓</span>';
+            }, 1000);
+        }
+        
+        function updateArbitrageBounds() {
+            // Re-evaluate arbitrage whenever bounds change using current market price
+            const currentPrice = parseFloat(document.getElementById('stablecoin-price').value) || 1.00;
+            checkArbitrage(currentPrice);
+        }
+        
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            updateFundPools();
+            updateCollateralizationStatus();
+            calculateStablecoinSupply(); // Initialize calculation display
+
+            // Trigger arbitrage checking when market price changes (for demo responsiveness)
+            const priceInput = document.getElementById('stablecoin-price');
+            if (priceInput) {
+                priceInput.addEventListener('input', function() {
+                    const p = parseFloat(this.value) || 1.00;
+                    checkArbitrage(p);
+                });
+            }
+            // Also react to the per-trade price field if user prefers to preview arbitrage
+            const tradePriceInput = document.getElementById('trade-price');
+            if (tradePriceInput) {
+                tradePriceInput.addEventListener('input', function() {
+                    const p = parseFloat(this.value);
+                    if (p && p > 0) checkArbitrage(p);
+                });
+            }
+        });
+        
+        // Add Deposit and Withdraw button functionality
+        function depositUSD() {
+            const amount = parseFloat(document.getElementById('reserve-amount').value);
+            if (!amount || amount <= 0) {
+                alert('Please enter a valid deposit amount');
+                return;
+            }
+            
+            if (collateralType === 'asset-backed') {
+                const lastIcoAmount = icoAmount;
+                icoAmount = lastIcoAmount + amount;
+                alert(`Deposited $${amount.toFixed(2)} into asset-backed reserve (was $${lastIcoAmount.toFixed(2)})`);
+            } else {
+                const lastCollateralValue = totalCollateralValue;
+                totalCollateralValue = lastCollateralValue + amount;
+                alert(`Deposited $${amount.toFixed(2)} into ${collateralType} reserve (was $${lastCollateralValue.toFixed(2)})`);
+            }
+            
+            updateReserve();
+            document.getElementById('reserve-amount').value = '';
+        }
+
+        function withdrawUSD() {
+            const amount = parseFloat(document.getElementById('reserve-amount').value);
+            if (!amount || amount <= 0) {
+                alert('Please enter a valid withdrawal amount');
+                return;
+            }
+            
+            if (collateralType === 'asset-backed') {
+                if (amount > icoAmount) {
+                    alert('Insufficient funds in asset-backed reserve for withdrawal');
+                    return;
+                }
+                const lastIcoAmount = icoAmount;
+                icoAmount = lastIcoAmount - amount;
+                alert(`Withdrew $${amount.toFixed(2)} from asset-backed reserve (was $${lastIcoAmount.toFixed(2)})`);
+            } else {
+                if (amount > totalCollateralValue) {
+                    alert(`Insufficient funds in ${collateralType} reserve for withdrawal`);
+                    return;
+                }
+                const lastCollateralValue = totalCollateralValue;
+                totalCollateralValue = lastCollateralValue - amount;
+                alert(`Withdrew $${amount.toFixed(2)} from ${collateralType} reserve (was $${lastCollateralValue.toFixed(2)})`);
+            }
+            
+            updateReserve();
+            document.getElementById('reserve-amount').value = '';
+        }
+        
+        // Initialize page when loaded
+        window.onload = function() {
+            initializePage();
+        };
+        
+        // Sample data loading
+        function loadSampleData() {
+            // Set stablecoin name
+            document.getElementById('stablecoin-name').value = 'ArtUSD Stablecoin';
+            
+            // Generate sample contract
+            generateContract();
+            
+            // Load sample collateral based on type
+            if (collateralType === 'asset-backed') {
+                // Add sample RWA assets
+                document.getElementById('nft-address-1').value = '0x1234567890abcdef1234567890abcdef12345678';
+                document.getElementById('nft-address-2').value = '0xabcdef1234567890abcdef1234567890abcdef12';
+                document.getElementById('cash-value').value = '50000';
+                auctionIn();
+                
+                document.getElementById('nft-address-1').value = '0x2468ace13579bdf02468ace13579bdf02468ace1';
+                document.getElementById('nft-address-2').value = '0x13579bdf02468ace13579bdf02468ace13579bdf0';
+                document.getElementById('cash-value').value = '30000';
+                auctionIn();
+                
+                // Set reserve deposit amount
+                document.getElementById('reserve-amount').value = '50000';
+                depositUSD();
+            } else {
+                // Add sample reserves for fiat/commodity-pegged
+                document.getElementById('cash-value').value = '100000';
+                depositReserve();
+                
+                document.getElementById('cash-value').value = '50000';
+                depositReserve();
+            }
+            
+            // Set circulation parameters
+            document.getElementById('circulation-ratio').value = '0.8';
+            document.getElementById('stablecoin-price').value = '1.00';
+            
+            // Calculate and mint tokens
+            calculateStablecoinSupply();
+            mintBurn();
+            
+            // Set arbitrage bounds
+            document.getElementById('lower-bound').value = '0.98';
+            document.getElementById('upper-bound').value = '1.02';
+            
+            alert('Sample data loaded successfully! ArtUSD stablecoin demo is ready.');
+        }
+        
+        function clearAllData() {
+            // Reset all global variables
+            totalCollateralValue = 0;
+            totalSupply = 0;
+            circulatingSupply = 0;
+            icoAmount = 0;
+            exchangeNetUSD = 0;
+            exchangeNetStablecoin = 0;
+            orderCounter = 1;
+            arbOrderCounter = 1;
+            collateralBasket = [];
+            
+            // Clear all input fields
+            document.getElementById('stablecoin-name').value = '';
+            document.getElementById('nft-address-1').value = '';
+            document.getElementById('nft-address-2').value = '';
+            document.getElementById('cash-value').value = '';
+            document.getElementById('circulation-ratio').value = '';
+            document.getElementById('stablecoin-price').value = '1.00';
+            document.getElementById('ico-amount').value = '';
+            const tAmt = document.getElementById('trade-stablecoin-amount');
+            const tPrice = document.getElementById('trade-price');
+            if (tAmt) tAmt.value = '';
+            if (tPrice) tPrice.value = '';
+            document.getElementById('lower-bound').value = '0.97';
+            document.getElementById('upper-bound').value = '1.03';
+            
+            // Clear displays
+            document.getElementById('contract-address').textContent = 'Smart contract address will appear here';
+            document.getElementById('circulating-supply').textContent = '0.000000';
+            document.getElementById('max-token-supply').value = '';
+            
+            // Clear consoles
+            document.getElementById('collateral-console').innerHTML = '';
+            document.getElementById('orderbook-console').innerHTML = '';
+            document.getElementById('arbitrage-console').innerHTML = '';
+            
+            // Update all displays
+            updateCollateralDisplay();
+            updateFundPools();
+            updateCollateralizationStatus();
+            calculateStablecoinSupply();
+            
+            alert('All data cleared successfully!');
+        }
+
+        // Modal functionality
+        function showGuideModal() {
+            const modalTitle = document.getElementById('modalTitle');
+            const modalBody = document.getElementById('modalBody');
+            
+            modalTitle.textContent = 'Stablecoin Playground Guide Tour';
+            modalBody.innerHTML = `
+                <div class="modal-section">
+                    <h3>🏛️ What is a Stablecoin Playground?</h3>
+                    <p>This is an interactive simulation environment where you can experiment with stablecoin creation, management, and trading mechanisms. Learn how different collateral types affect stablecoin stability and explore various economic scenarios.</p>
+                </div>
+                
+                <div class="modal-section">
+                    <h3>🔗 Column Overview</h3>
+                    <ul>
+                        <li><strong>Stablecoin Issuance:</strong> Create and manage your stablecoin contract, collateral backing, and token minting</li>
+                        <li><strong>Fund Pool:</strong> Monitor liquidity pools, arbitrage mechanisms, and fund distribution</li>
+                        <li><strong>Primary Exchange:</strong> Trade stablecoins and observe market dynamics through order books</li>
+                    </ul>
+                </div>
+                
+                <div class="modal-section">
+                    <h3>🚀 Getting Started</h3>
+                    <p>1. Click "Load Sample Data" to populate the playground with demo values</p>
+                    <p>2. Experiment with different collateral types (Asset-backed, Fiat-pegged, Commodity-pegged)</p>
+                    <p>3. Try minting tokens, trading, and observing how the collateralization status changes</p>
+                    <p>4. Use the individual column guides (ℹ️) for detailed explanations of each section</p>
+                </div>
+                
+                <div class="modal-section">
+                    <h3>⚡ Key Features</h3>
+                    <ul>
+                        <li>Real-time collateralization monitoring</li>
+                        <li>Automated arbitrage simulation</li>
+                        <li>Multiple collateral type support</li>
+                        <li>Interactive trading environment</li>
+                        <li>Smart contract address generation</li>
+                    </ul>
+                </div>
+            `;
+            
+            document.getElementById('guideModal').style.display = 'block';
+        }
+
+        function showColumnGuide(columnType) {
+            const modalTitle = document.getElementById('modalTitle');
+            const modalBody = document.getElementById('modalBody');
+            
+            switch(columnType) {
+                case 'issuance':
+                    modalTitle.textContent = 'Stablecoin Issuance Guide';
+                    modalBody.innerHTML = `
+                        <div class="modal-section">
+                            <h3>🏭 Stablecoin Contract Constructor</h3>
+                            <p>Create your stablecoin smart contract by entering a name and generating the contract address. This simulates deploying an ERC-20 compatible stablecoin contract to Ethereum.</p>
+                        </div>
+                        
+                        <div class="modal-section">
+                            <h3>💎 Collateral Proof</h3>
+                            <p>Choose your collateral type and manage backing assets:</p>
+                            <ul>
+                                <li><strong>Asset-backed:</strong> Use NFTs representing real-world assets (RWAs)</li>
+                                <li><strong>Fiat-pegged:</strong> Backed by fiat currency reserves</li>
+                                <li><strong>Commodity-pegged:</strong> Backed by physical commodities</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="modal-section">
+                            <h3>💰 ICO & Reserve Funding</h3>
+                            <p>Manage your stablecoin's financial backing through ICO fundraising (asset-backed only) and direct reserve deposits/withdrawals. Monitor the collateralization status in real-time.</p>
+                        </div>
+                        
+                        <div class="modal-section">
+                            <h3>🪙 Token Mint-Burn</h3>
+                            <p>Control your stablecoin supply based on collateral value. The system automatically calculates maximum supply and allows you to set circulation ratios to maintain proper backing.</p>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'fundpool':
+                    modalTitle.textContent = 'Fund Pool Guide';
+                    modalBody.innerHTML = `
+                        <div class="modal-section">
+                            <h3>📊 Fund Pool Comparison</h3>
+                            <p>View real-time comparison between USD reserves and stablecoin pools. This helps you understand the balance between backing assets and circulating tokens.</p>
+                        </div>
+                        
+                        <div class="modal-section">
+                            <h3>⚖️ Arbitrage Price Band</h3>
+                            <p>Set upper and lower bounds for your stablecoin's price. When market price deviates beyond these bounds, automatic arbitrage mechanisms trigger to restore the peg.</p>
+                        </div>
+                        
+                        <div class="modal-section">
+                            <h3>🌊 Liquidity Pool</h3>
+                            <p>Monitor the exchange's USD and stablecoin liquidity. This shows how much capital is available for trading and provides suggested liquidity ratios for optimal market making.</p>
+                        </div>
+                        
+                        <div class="modal-section">
+                            <h3>🎯 Key Metrics</h3>
+                            <ul>
+                                <li>Exchange net positions in USD and stablecoins</li>
+                                <li>Suggested liquidity based on 30% of total pools</li>
+                                <li>Real-time percentage distribution of funds</li>
+                            </ul>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'exchange':
+                    modalTitle.textContent = 'Primary Exchange Guide';
+                    modalBody.innerHTML = `
+                        <div class="modal-section">
+                            <h3>💹 Stablecoin Trading</h3>
+                            <p>Buy and sell stablecoins at current market prices. Each transaction affects the exchange's liquidity pools and can trigger arbitrage opportunities.</p>
+                        </div>
+                        
+                        <div class="modal-section">
+                            <h3>📋 Regular Order Book</h3>
+                            <p>View all regular trading activity including buy/sell orders, volumes, and execution prices. Orders are marked with checkmarks upon successful completion.</p>
+                        </div>
+                        
+                        <div class="modal-section">
+                            <h3>⚡ Arbitrage Order Book</h3>
+                            <p>Monitor automatic arbitrage trades that execute when prices move outside the defined bounds. These help maintain the stablecoin's peg to its target value.</p>
+                        </div>
+                        
+                        <div class="modal-section">
+                            <h3>🔄 How It Works</h3>
+                            <ul>
+                                <li>Enter stablecoin amount to trade and the per-token trade price</li>
+                                <li>The system computes USD notional (amount × price) and executes</li>
+                                <li>Arbitrage bots automatically trade if price deviates too much</li>
+                                <li>All activity updates fund pools and collateralization status</li>
+                            </ul>
+                        </div>
+                    `;
+                    break;
+            }
+            
+            document.getElementById('guideModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('guideModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside of it
+        window.onclick = function(event) {
+            const modal = document.getElementById('guideModal');
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>
