@@ -9,11 +9,11 @@ The following Mermaid diagram illustrates the lifecycle of assets, token issuanc
 ```mermaid
 graph TD
     %% Define Styles
-    classDef asset fill:#e1f5fe,stroke:#0288d1,stroke-width:2px;
-    classDef token fill:#fff3e0,stroke:#ff9800,stroke-width:2px;
-    classDef market fill:#e8f5e9,stroke:#43a047,stroke-width:2px;
-    classDef pool fill:#f3e5f5,stroke:#8e24aa,stroke-width:2px;
-    classDef actor fill:#ffebee,stroke:#d32f2f,stroke-width:2px;
+    classDef asset fill:#00B3FF,stroke:#0288d1,stroke-width:2px;
+    classDef token fill:#FF9B00,stroke:#ff9800,stroke-width:2px;
+    classDef market fill:#00FF1E,stroke:#43a047,stroke-width:2px;
+    classDef pool fill:#E100FF,stroke:#8e24aa,stroke-width:2px;
+    classDef actor fill:#FF0022,stroke:#d32f2f,stroke-width:2px;
 
     %% Core Asset Layer
     Property[100 Indian Properties<br>Rental + Self-Use]:::asset
