@@ -11,7 +11,7 @@ graph TD
     %% Define Styles
     classDef asset fill:#00B3FF,stroke:#377BA1,stroke-width:2px;
     classDef token fill:#FF9B00,stroke:#996F31,stroke-width:2px;
-    classDef market fill:#00FF1E,stroke:#43a047,stroke-width:2px;
+    classDef market fill:#00FFB3,stroke:#43a047,stroke-width:2px;
     classDef pool fill:#E100FF,stroke:#7D3091,stroke-width:2px;
     classDef actor fill:#FF0022,stroke:#8C3535,stroke-width:2px;
 
