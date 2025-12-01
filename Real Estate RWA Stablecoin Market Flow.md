@@ -73,7 +73,7 @@ graph TD
     %% 4. 25% Liquidity Pool Reserve (LiquidityPool)
     %% 5. Secondary Market RWA Trading (SecondaryMarket, Stablecoin as medium)
     %% 6. DeFi Operations (DeFiProtos)
-'''
+```
 
 Detailed Narrative Description
 
