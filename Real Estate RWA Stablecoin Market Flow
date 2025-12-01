@@ -73,3 +73,40 @@ graph TD
     %% 4. 25% Liquidity Pool Reserve (LiquidityPool)
     %% 5. Secondary Market RWA Trading (SecondaryMarket, Stablecoin as medium)
     %% 6. DeFi Operations (DeFiProtos)
+'''
+
+Detailed Narrative Description
+
+The flowchart above is structured into several key layers: Core Assets, Issuance Mechanisms, Token Products, Markets/Pools, and Participants.
+
+1. Core Asset Foundation (Blue Block)
+
+The entire ecosystem is built upon the foundation of [100 Indian Properties], which includes a mix of income-generating rental properties and self-use properties.
+
+2. Dual-Track Token Issuance Mechanism
+
+The model ingeniously separates the "capital value" and the "yield value" of the properties into two distinct tracks:
+
+    Left Track - Stablecoin (Capital Value): The total property portfolio serves as collateral. It undergoes (Quarterly Valuation & Monitoring) to ensure the asset value always exceeds the issued tokens. Based on this valuation, the [Property Stablecoin] is created via {Collateralized Issuance} at a 50% Loan-to-Value (LTV) ratio, pegging its value to the Indian Rupee (INR).
+
+    Right Track - RWA Token (Yield Value): The (Rental Income Stream) generated specifically by the rental properties within the portfolio is used to back the issuance of the [10-Year Property Yield RWA Token]. Holding this token represents a right to share in the rental dividends over the next decade.
+
+3. Primary Market & Fund Allocation (Green & Purple Blocks)
+
+    Investors enter the [Primary Market] bringing external capital (fiat or cryptocurrency).
+
+    They deploy these funds to acquire the [Property Stablecoin].
+
+    Critical Fund Flow: The proceeds received from stablecoin issuance are split in the backend. 25% is allocated to the [INR Liquidity Pool] to serve as a reserve for future redemptions, while the remaining 75% is utilized by the issuer.
+
+4. Secondary Market & DeFi Interaction (Green Blocks)
+
+    Trading Medium: The [Property Stablecoin] functions as the native currency for transactions within this ecosystem.
+
+    RWA Trading: The [10-Year RWA Token] is listed on the [Secondary Market]. Investors wishing to buy or sell this yield token must use the [Property Stablecoin] for settlement. Unlike the stablecoin, the price of the RWA Token is not fixed but determined freely by market supply and demand.
+
+    DeFi Enhancement: Investors can further utilize their Stablecoins or RWA Tokens within various [DeFi Protocols], engaging in activities such as Staking to earn additional yields or performing leveraged lending operations.
+
+5. Redemption Mechanism
+
+    When investors wish to exit their stablecoin positions, the [INR Liquidity Pool] is utilized to facilitate these requests, enabling the redemption of the stablecoin back into fiat or other base assets.
